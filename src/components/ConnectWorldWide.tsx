@@ -416,7 +416,7 @@ function ConnectWorldWide() {
           transition={{ duration: 0.8 }}
         >
             Expand Your Reach Globally
-        </motion.h1>\
+        </motion.h1>
         <motion.p 
           className="text-neutral-300 max-w-3xl mx-auto my-2 text-sm md:text-xl text-center relative z-10"
           initial={{ opacity: 0 }}
