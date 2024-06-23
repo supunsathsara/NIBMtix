@@ -1,9 +1,10 @@
+import About from "@/components/About";
+import BottomCTA from "@/components/BottomCTA";
+import ConnectWorldWide from "@/components/ConnectWorldWide";
+import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import { FloatingNav } from "@/components/ui/FloatingNavbar";
-import { FaHome } from "react-icons/fa";
 import { navItems } from "@/data";
-import About from "@/components/About";
-import ConnectWorldWide from "@/components/ConnectWorldWide";
 
 
 export default function Home() {
@@ -15,6 +16,8 @@ export default function Home() {
         <Hero />
         <About />
         <ConnectWorldWide />
+        <BottomCTA />
+        <Footer />
         </div>
     </main>
   );
