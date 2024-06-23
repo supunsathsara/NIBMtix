@@ -2,6 +2,8 @@ import Hero from "@/components/Hero";
 import { FloatingNav } from "@/components/ui/FloatingNavbar";
 import { FaHome } from "react-icons/fa";
 import { navItems } from "@/data";
+import About from "@/components/About";
+import ConnectWorldWide from "@/components/ConnectWorldWide";
 
 
 export default function Home() {
@@ -11,7 +13,8 @@ export default function Home() {
        <div className="max-w-7xl w-full">
        <FloatingNav navItems={navItems} />
         <Hero />
-        <Hero />
+        <About />
+        <ConnectWorldWide />
         </div>
     </main>
   );
