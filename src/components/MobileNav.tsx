@@ -27,7 +27,7 @@ function MobileNav({ active }: { active: string }) {
             <Tooltip key={item.name}>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href={item.href}
                   prefetch={false}
                   className={cn(
                     "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8",

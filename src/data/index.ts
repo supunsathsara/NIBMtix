@@ -33,7 +33,7 @@ export const socialMedia = [
 
 export const dashboardNavItems: DashboardNavItem[] = [
   {
-    href: "#",
+    href: "/dashboard",
     icon: LayoutDashboardIcon,
     srText: "Dashboard",
     name: "Dashboard",
@@ -51,10 +51,10 @@ export const dashboardNavItems: DashboardNavItem[] = [
     name: "Tickets",
   },
   {
-    href: "#",
+    href: "/dashboard/participants",
     icon: UsersIcon,
-    srText: "Customers",
-    name: "Customers",
+    srText: "Participants",
+    name: "Participants",
   },
   {
     href: "#",

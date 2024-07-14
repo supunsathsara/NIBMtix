@@ -27,7 +27,7 @@ function SheetNav({ active }: { active: string }) {
           {dashboardNavItems.map((item) => (
             <Link
               key={item.name}
-              href="#"
+              href={item.href}
               className={cn(
                 "flex items-center gap-4 px-2.5",
                 active === item.name
