@@ -50,6 +50,7 @@ import {
   TicketIcon,
   UsersIcon,
 } from "@/components/ui/Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function DashboardPage() {
   return (
@@ -78,19 +79,13 @@ export default function DashboardPage() {
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="overflow-hidden rounded-full"
-                >
-                  <img
-                    src="/placeholder.svg"
-                    width={36}
-                    height={36}
-                    alt="Avatar"
-                    className="overflow-hidden rounded-full"
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/supunsathsara.png"
+                    alt="@supunsathsara"
                   />
-                </Button>
+                  <AvatarFallback>SS</AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
