@@ -1,0 +1,97 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
+
+import MobileNav from "@/components/MobileNav";
+import SheetNav from "@/components/SheetNav";
+
+import { DataTable } from "@/components/ui/data-table";
+import AccountOptions from "@/components/AccountOptions";
+import { Button } from "@/components/ui/button";
+import { Event } from "@/types";
+import { eventColumns } from "@/components/ui/event-columns";
+import { EventTable } from "@/components/ui/event-table";
+
+export default async function EventsPage() {
+  const events: Event[] = [
+    {
+      id: "1",
+      name: "Event 1",
+      date: "2022-01-01",
+      time: "08:00",
+      location: "Location 1",
+      ticketsSold: 100,
+      slug: "event-1",
+      default: true,
+    },
+    {
+      id: "2",
+      name: "Event 2",
+      date: "2022-01-02",
+      time: "09:00",
+      location: "Location 2",
+      ticketsSold: 40,
+      slug: "event-3",
+
+      default: false,
+    },
+    {
+      id: "3",
+      name: "Event 3",
+      date: "2022-01-03",
+      time: "10:00",
+      location: "Location 3",
+      ticketsSold: 70,
+      slug: "event-3",
+      default: false,
+    },
+  ];
+  return (
+    <div className="flex min-h-screen w-full">
+      <MobileNav active="Events" />
+
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 w-full">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <SheetNav active="Events" />
+          <Breadcrumb className="hidden md:flex">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/dashboard" prefetch={false}>
+                    Dashboard
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="#" prefetch={false}>
+                    Events
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <AccountOptions />
+        </header>
+        <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full">
+          <div className="pb-6">
+            <h2 className="text-2xl font-bold tracking-tight">Events</h2>
+            <p className="text-muted-foreground">Here&apos;s the events list</p>
+            <div className="mt-6 flex justify-end">
+              <Button color="primary" size="lg">
+                Create Event
+              </Button>
+            </div>
+          </div>
+          <EventTable data={events} columns={eventColumns} />
+        </main>
+      </div>
+    </div>
+  );
+}

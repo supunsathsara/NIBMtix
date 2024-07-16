@@ -6,3 +6,14 @@ export interface DashboardNavItem {
   srText: string;
   name: string;
 }
+
+export type Event = {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+  location: string;
+  ticketsSold: number;
+  slug: string;
+  default: boolean;
+};

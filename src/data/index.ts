@@ -39,7 +39,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
     name: "Dashboard",
   },
   {
-    href: "#",
+    href: "/dashboard/events",
     icon: CalendarIcon,
     srText: "Events",
     name: "Events",
