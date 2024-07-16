@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,57 +5,18 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import Link from "next/link";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  XAxis,
-} from "recharts";
 
 import MobileNav from "@/components/MobileNav";
 import SheetNav from "@/components/SheetNav";
-import {
-  CalendarIcon,
-  DollarSignIcon,
-  TicketIcon,
-  UsersIcon,
-} from "@/components/ui/Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import AccountOptions from "@/components/AccountOptions";
+import { DataTable } from "@/components/ui/data-table";
 import {
   Participant,
   participantColumns,
 } from "@/components/ui/participant-columns";
-import { DataTable } from "@/components/ui/data-table";
 import {
   CircleAlert,
   CircleCheckBig,
@@ -70,13 +29,13 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const data: Participant[] = [
     {
       id: "b596e80d-4687-494d-9760-c9de5ff22fc2",
       name: "Chris Johnson",
       email: "katie.jones@outlook.com",
-      mobile: "0345678900",
+      mobile: "0345678993",
       mealType: "Non-Veg",
       refreshments: 0,
       lunch: 1,
@@ -351,11 +310,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen w-full">
-      <MobileNav active="Dashboard" />
+      <MobileNav active="Participants" />
 
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 w-full">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <SheetNav active="Dashboard" />
+          <SheetNav active="Participants" />
           <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -375,34 +334,7 @@ export default function DashboardPage() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="ml-auto flex items-center gap-2">
-            <Input
-              type="search"
-              placeholder="Search events..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar>
-                  <AvatarImage
-                    src="https://github.com/supunsathsara.png"
-                    alt="@supunsathsara"
-                  />
-                  <AvatarFallback>SS</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="/login">Logout</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <AccountOptions />
         </header>
         <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full">
           <div className="pb-6">
