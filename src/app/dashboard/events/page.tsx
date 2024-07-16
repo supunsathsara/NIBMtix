@@ -52,46 +52,40 @@ export default async function EventsPage() {
     },
   ];
   return (
-    <div className="flex min-h-screen w-full">
-      <MobileNav active="Events" />
-
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 w-full">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <SheetNav active="Events" />
-          <Breadcrumb className="hidden md:flex">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/dashboard" prefetch={false}>
-                    Dashboard
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#" prefetch={false}>
-                    Events
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <AccountOptions />
-        </header>
-        <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full">
-          <div className="pb-6">
-            <h2 className="text-2xl font-bold tracking-tight">Events</h2>
-            <p className="text-muted-foreground">Here&apos;s the events list</p>
-            <div className="mt-6 flex justify-end">
+    <div>
+      <Breadcrumb className="hidden md:flex ml-6 -mt-12 z-40 absolute mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/dashboard" prefetch={false}>
+                Dashboard
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="#" prefetch={false}>
+                Events
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full">
+        <div className="pb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Events</h2>
+          <p className="text-muted-foreground">Here&apos;s the events list</p>
+          <div className="mt-6 flex justify-end">
+            <Link href="/dashboard/events/new">
               <Button color="primary" size="lg">
                 Create Event
               </Button>
-            </div>
+            </Link>
           </div>
-          <EventTable data={events} columns={eventColumns} />
-        </main>
-      </div>
+        </div>
+        <EventTable data={events} columns={eventColumns} />
+      </main>
     </div>
   );
 }
