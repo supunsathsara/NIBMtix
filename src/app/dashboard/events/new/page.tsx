@@ -10,14 +10,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { z } from "zod";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -27,30 +19,39 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast"
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const EventDetailsSchema = z.object({
-  name: z.string().nonempty("Name is required"),
-  date: z.string().nonempty("Date is required"),
-  time: z.string().nonempty("Time is required"),
-  location: z.string().nonempty("Location is required"),
+  name: z.string().min(1, "Name is required"),
+  date: z.string().min(1, "Date is required"),
+  time: z.string().min(1, "Time is required"),
+  location: z.string().min(1, "Location is required"),
   availableTickets: z.number().min(1, "At least one ticket must be available"),
-  slug: z.string().min(1,"Slug is required")
-  .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase alphabets, numbers and hyphens"),
+  slug: z
+    .string()
+    .min(1, "Slug is required")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Slug can only contain lowercase alphabets, numbers and hyphens"
+    ),
   mealProvided: z.boolean(),
   price: z.number().min(0, "Price must be a positive number"),
-  description: z.string().nonempty("Description is required"),
+  description: z.string().min(1, "Description is required"),
   image: z.instanceof(File).optional(),
 });
 
 export default function NewEventsPage() {
-  
-  const { toast } = useToast()
-  const router = useRouter()
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(EventDetailsSchema),
@@ -87,23 +88,27 @@ export default function NewEventsPage() {
     checkSlugAvailability(debouncedSlug);
   }, [debouncedSlug, checkSlugAvailability]);
 
-
   function generateSlug(name: string) {
     //add the current year too with a hypen
-    const slug = name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "") + "-" + new Date().getFullYear();
+    const slug =
+      name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "") +
+      "-" +
+      new Date().getFullYear();
     setSlug(slug);
     form.setValue("slug", slug);
   }
 
-  const handleSlugChange = (e:any) => {
-    const newSlug = e.target.value.toLowerCase();
+  const handleSlugChange = (e: any) => {
+    const newSlug = e.target.value
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
     setSlug(newSlug);
     setIsSlugChecking(true);
   };
-
 
   function onSubmit(values: z.infer<typeof EventDetailsSchema>) {
     // ✅ This will be type-safe and validated.
@@ -114,14 +119,9 @@ export default function NewEventsPage() {
       title: "Event Created",
       description: "Event has been created successfully",
       type: "foreground",
-      
     });
 
-    router.push('/dashboard/events')
-
-    //rest form
-    //form.reset();
-    
+    router.push("/dashboard/events");
   }
 
   const getTodayDate = () => {
@@ -180,11 +180,13 @@ export default function NewEventsPage() {
                   <FormItem>
                     <FormLabel>Event Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Swara Mansala '24" {...field} 
-                      onChange={(e) => {
-                        field.onChange(e.target.value);
-                        generateSlug(e.target.value);
-                      }}
+                      <Input
+                        placeholder="Swara Mansala '24"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          generateSlug(e.target.value);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -227,7 +229,7 @@ export default function NewEventsPage() {
                     <FormItem>
                       <FormLabel>Location</FormLabel>
                       <FormControl>
-                        <Input placeholder="Location" {...field} />
+                        <Input placeholder="NIBM Galle Campus" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -266,40 +268,50 @@ export default function NewEventsPage() {
                     <FormItem>
                       <FormLabel>Event Slug</FormLabel>
                       <FormControl>
-                        <Input placeholder="event-slug" {...field}
-                        value={slug}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          handleSlugChange(e);
-                        }}
+                        <Input
+                          placeholder="event-slug"
+                          {...field}
+                          value={slug}
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                            handleSlugChange(e);
+                          }}
                         />
                       </FormControl>
                       <FormDescription className="flex flex-col gap-1">
-                        A unique slug for the event. Slug can only contain lowercase alphabets, numbers and hyphens
+                        A unique slug for the event. Slug can only contain
+                        lowercase alphabets, numbers and hyphens
                       </FormDescription>
                       <div>
-                          {
-                            isSlugChecking ? (
-                              <Badge variant="outline" className="text-yellow-500 border-yellow-500">
-                                Checking...
-                              </Badge>
-                            ) : isSlugAvailable ? (
-                              <Badge variant="outline" className="text-green-500 border-green-500">
-                                Available
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-red-500 border-red-500">
-                                Taken
-                              </Badge>
-                            )
-                          }
-                        </div>
+                        {slug &&
+                          (isSlugChecking ? (
+                            <Badge
+                              variant="outline"
+                              className="text-yellow-500 border-yellow-500"
+                            >
+                              Checking...
+                            </Badge>
+                          ) : isSlugAvailable ? (
+                            <Badge
+                              variant="outline"
+                              className="text-green-500 border-green-500"
+                            >
+                              Available
+                            </Badge>
+                          ) : (
+                            <Badge
+                              variant="outline"
+                              className="text-red-500 border-red-500"
+                            >
+                              Taken
+                            </Badge>
+                          ))}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              
             </div>
             <div className="space-y-4">
               <FormField
@@ -330,7 +342,10 @@ export default function NewEventsPage() {
                     <FormItem>
                       <FormLabel>Event Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea
+                          {...field}
+                          placeholder="A brief description about the event"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
