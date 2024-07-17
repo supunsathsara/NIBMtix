@@ -163,8 +163,10 @@ export default function NewEventsPage() {
       </Breadcrumb>
       <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full px-7">
         <div className="pb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Events</h2>
-          <p className="text-muted-foreground">Here&apos;s the events list</p>
+          <h2 className="text-2xl font-bold tracking-tight">Create New Event</h2>
+          <p className="text-muted-foreground">
+            Fill in the details to create a new event
+          </p>
         </div>
 
         <Form {...form}>
