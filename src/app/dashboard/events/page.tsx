@@ -7,15 +7,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 
-import MobileNav from "@/components/MobileNav";
-import SheetNav from "@/components/SheetNav";
-
-import { DataTable } from "@/components/ui/data-table";
-import AccountOptions from "@/components/AccountOptions";
 import { Button } from "@/components/ui/button";
-import { Event } from "@/types";
 import { eventColumns } from "@/components/ui/event-columns";
 import { EventTable } from "@/components/ui/event-table";
+import { Event } from "@/types";
 
 export default async function EventsPage() {
   const events: Event[] = [

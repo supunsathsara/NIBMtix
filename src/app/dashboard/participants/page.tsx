@@ -29,7 +29,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 
-export default async function DashboardPage() {
+export default async function ParticipantsPage() {
   const data: Participant[] = [
     {
       id: "b596e80d-4687-494d-9760-c9de5ff22fc2",
