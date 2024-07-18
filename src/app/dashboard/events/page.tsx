@@ -23,6 +23,10 @@ export default async function EventsPage() {
       ticketsSold: 100,
       slug: "event-1",
       default: true,
+      availableTickets: 0,
+      ticketPrice: 0,
+      mealProvided: false,
+      description: ""
     },
     {
       id: "2",
@@ -32,8 +36,11 @@ export default async function EventsPage() {
       location: "Location 2",
       ticketsSold: 40,
       slug: "event-3",
-
       default: false,
+      availableTickets: 0,
+      ticketPrice: 0,
+      mealProvided: false,
+      description: ""
     },
     {
       id: "3",
@@ -44,6 +51,10 @@ export default async function EventsPage() {
       ticketsSold: 70,
       slug: "event-3",
       default: false,
+      availableTickets: 0,
+      ticketPrice: 0,
+      mealProvided: false,
+      description: ""
     },
   ];
   return (

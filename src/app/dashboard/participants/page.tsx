@@ -5,29 +5,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 import MobileNav from "@/components/MobileNav";
 import SheetNav from "@/components/SheetNav";
 
 import AccountOptions from "@/components/AccountOptions";
-import { DataTable } from "@/components/ui/data-table";
-import {
-  Participant,
-  participantColumns,
-} from "@/components/ui/participant-columns";
-import {
-  CircleAlert,
-  CircleCheckBig,
-  Coffee,
-  Cookie,
-  Drumstick,
-  Fish,
-  LeafIcon,
-  Utensils,
-  UtensilsCrossed,
-} from "lucide-react";
+import ParticipantDetails from "@/components/ParticipantDetails";
+import { Participant } from "@/components/ui/participant-columns";
 
 export default async function ParticipantsPage() {
   const data: Participant[] = [
@@ -345,93 +330,7 @@ export default async function ParticipantsPage() {
               Here&apos;s the participants list for EVENT NAME
             </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium uppercase">
-                  Attendance
-                </CardTitle>
-                <CircleCheckBig className="w-4 h-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-bold">
-                  <div className="flex gap-3">
-                    <CircleCheckBig className="w-4 h-4 my-auto" />
-                    Arrived:{" "}
-                    <span className="font-extrabold">
-                      {data.filter((p) => p.attendance === 1).length}
-                    </span>{" "}
-                    / {data.length}
-                  </div>
-                  <div className="flex gap-3">
-                    <CircleAlert className="w-4 h-4 my-auto" />
-                    Pending:{" "}
-                    <span className="">
-                      {data.filter((p) => p.attendance === 0).length}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium uppercase">
-                  dietary requirements
-                </CardTitle>
-                <Utensils className="w-4 h-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-bold">
-                  <div className="flex gap-3">
-                    <LeafIcon className="w-4 h-4 my-auto" />
-                    Veg:{" "}
-                    <span>
-                      {data.filter((p) => p.mealType === "Veg").length}
-                    </span>
-                  </div>
-                  <div className="flex gap-3">
-                    <Drumstick className="w-4 h-4 my-auto" />
-                    Non-Veg:{" "}
-                    <span>
-                      {data.filter((p) => p.mealType === "Non-Veg").length}
-                    </span>
-                  </div>
-                  <div className="flex gap-3">
-                    <Fish className="w-4 h-4 my-auto" />
-                    Fish:{" "}
-                    <span>
-                      {data.filter((p) => p.mealType === "Fish").length}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Meals & Refreshments
-                </CardTitle>
-                <Cookie className="w-4 h-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-bold">
-                  <div className="flex gap-3">
-                    <UtensilsCrossed className="w-4 h-4 my-auto" />
-                    Lunch:{" "}
-                    <span>{data.filter((p) => p.lunch === 1).length}</span>
-                  </div>
-                  <div className="flex gap-3">
-                    <Coffee className="w-4 h-4 my-auto" />
-                    Refreshments:{" "}
-                    <span>
-                      {data.filter((p) => p.refreshments === 1).length}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <DataTable columns={participantColumns} data={data} />
+          <ParticipantDetails data={data} />
         </main>
       </div>
     </div>

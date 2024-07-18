@@ -1,26 +1,20 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
-  Check,
-  CheckCheckIcon,
-  CheckIcon,
-  CircleAlert,
-  CircleCheckBig,
-  ClockIcon,
-  MoreHorizontal,
-} from "lucide-react";
 import { Event } from "@/types";
-import { Badge } from "@/components/ui/badge";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  MoreHorizontal
+} from "lucide-react";
+import Link from "next/link";
 
 /*
 export type Event = {
@@ -75,7 +69,7 @@ export const eventColumns: ColumnDef<Event>[] = [
     accessorKey: "ticketsSold",
     header: "Tickets Sold",
   },
- 
+
   {
     id: "actions",
     cell: ({ row }) => {
@@ -91,11 +85,20 @@ export const eventColumns: ColumnDef<Event>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(`https://example.com/buy/${event.slug}`)}
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  `https://example.com/buy/${event.slug}`
+                )
+              }
             >
               Copy Event Link
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <Link href={`/dashboard/events/${event.slug}`}>
+            <DropdownMenuItem>
+              View Details
+            </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Mark as default</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

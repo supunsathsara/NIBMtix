@@ -13,7 +13,12 @@ export type Event = {
   date: string;
   time: string;
   location: string;
+  availableTickets: number;
   ticketsSold: number;
+  ticketPrice: number;
   slug: string;
-  default: boolean;
+  mealProvided: boolean;
+  description: string;
+  default?: boolean;
 };
+
