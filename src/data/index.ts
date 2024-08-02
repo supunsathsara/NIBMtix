@@ -45,7 +45,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
     name: "Events",
   },
   {
-    href: "#",
+    href: "/dashboard/tickets",
     icon: TicketIcon,
     srText: "Tickets",
     name: "Tickets",
