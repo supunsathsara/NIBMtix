@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
+
+
   return (
     <div className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
@@ -32,7 +34,9 @@ export default function LoginPage() {
           <Input id="password" type="password" required />
         </div>
         <Button type="submit" className="w-full">
+            <Link href="/dashboard">
           Login
+            </Link>
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">

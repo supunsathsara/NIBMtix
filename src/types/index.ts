@@ -31,5 +31,5 @@ export type Ticket = {
   attendance: number; // 0 = not-attended, 1 = attended
   arrival: string;
   paymentMethod: 1 | 2; // 1 = Cash, 2 = Card
-  status: 0 | 1 | 2 | 3; // 0 = not-paid, 1 = paid, 2 = refunded
+  status: 0 | 1 | 2; // 0 = not-paid, 1 = paid, 2 = refunded
 };
