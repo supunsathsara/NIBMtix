@@ -30,6 +30,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 const EventDetailsSchema = z.object({
   name: z.string().min(1, "Name is required"),
   date: z.string().min(1, "Date is required"),
@@ -72,6 +74,8 @@ export default function NewEventsPage() {
   const [slug, setSlug] = useState("");
   const [isSlugAvailable, setIsSlugAvailable] = useState(false);
   const [isSlugChecking, setIsSlugChecking] = useState(false);
+  const [eventImage, setEventImage] = useState<File | null>(null);
+  const [fileInputValue, setFileInputValue] = useState<string>("");
 
   const debouncedSlug = useDebounce({ value: slug, delay: 2000 });
 
@@ -163,7 +167,9 @@ export default function NewEventsPage() {
       </Breadcrumb>
       <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full px-7">
         <div className="pb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Create New Event</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Create New Event
+          </h2>
           <p className="text-muted-foreground">
             Fill in the details to create a new event
           </p>
@@ -366,14 +372,50 @@ export default function NewEventsPage() {
                           id="image"
                           type="file"
                           accept="image/png, image/gif, image/jpeg"
-                          onChange={(e) => field.onChange(e.target.files?.[0])}
+                          value={fileInputValue}
+                          onChange={(e) => {
+                            const file = e.target?.files?.[0];
+                            if (file) {
+                              if (file.size > MAX_FILE_SIZE) {
+                                alert("File size exceeds the 5MB limit.");
+                                setEventImage(null);
+                                setFileInputValue("");
+                              } else {
+                                field.onChange(file);
+                                setEventImage(file);
+                                setFileInputValue(e.target.value);
+                              }
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {eventImage && (
+                  <div className="flex items-center gap-4 pt-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={URL.createObjectURL(eventImage)}
+                      alt="Event Image"
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setEventImage(null);
+                        setFileInputValue("");
+                        form.setValue("image", undefined);
+                      }}
+                    >
+                      Remove Image
+                    </Button>
+                  </div>
+                )}
               </div>
+
               <div>
                 <FormField
                   control={form.control}
@@ -396,7 +438,6 @@ export default function NewEventsPage() {
                 />
               </div>
             </div>
-
             <div className="col-span-2 flex justify-end">
               <Button type="submit" className="w-fit sm:w-auto">
                 Create Event

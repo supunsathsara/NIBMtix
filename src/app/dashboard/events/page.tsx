@@ -26,7 +26,8 @@ export default async function EventsPage() {
       availableTickets: 0,
       ticketPrice: 0,
       mealProvided: false,
-      description: ""
+      description: "",
+      status: 1,
     },
     {
       id: "2",
@@ -35,12 +36,13 @@ export default async function EventsPage() {
       time: "09:00",
       location: "Location 2",
       ticketsSold: 40,
-      slug: "event-3",
+      slug: "event-2",
       default: false,
       availableTickets: 0,
       ticketPrice: 0,
       mealProvided: false,
-      description: ""
+      description: "",
+      status: 2,
     },
     {
       id: "3",
@@ -54,7 +56,23 @@ export default async function EventsPage() {
       availableTickets: 0,
       ticketPrice: 0,
       mealProvided: false,
-      description: ""
+      description: "",
+      status: 0,
+    },
+    {
+      id: "4",
+      name: "Event 4",
+      date: "2022-01-04",
+      time: "11:00",
+      location: "Location 4",
+      ticketsSold: 20,
+      slug: "event-4",
+      default: false,
+      availableTickets: 0,
+      ticketPrice: 0,
+      mealProvided: false,
+      description: "",
+      status: 3,
     },
   ];
   return (

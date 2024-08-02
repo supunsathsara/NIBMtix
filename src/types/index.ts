@@ -9,6 +9,7 @@ export interface DashboardNavItem {
 
 export type Event = {
   id: string;
+  image?: string;
   name: string;
   date: string;
   time: string;
@@ -20,5 +21,6 @@ export type Event = {
   mealProvided: boolean;
   description: string;
   default?: boolean;
+  status: 0 | 1 | 2 | 3; // 0 = Pending, 1 = Active, 2 = Rejected, 3 = Archived
 };
 

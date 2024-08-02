@@ -69,7 +69,33 @@ export const eventColumns: ColumnDef<Event>[] = [
     accessorKey: "ticketsSold",
     header: "Tickets Sold",
   },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const event = row.original;
 
+      let statusColor = "yellow";
+      let statusText = "Pending";
+
+      if (event.status === 1) {
+        statusColor = "green";
+        statusText = "Active";
+      } else if (event.status === 2) {
+        statusColor = "red";
+        statusText = "Rejected";
+      } else if (event.status === 3) {
+        statusColor = "gray";
+        statusText = "Archived"
+      }
+
+      return (
+        <Badge variant="outline" className={`text-${statusColor}-500 text-end`}>
+          {statusText}
+        </Badge>
+      );
+    },
+  },
   {
     id: "actions",
     cell: ({ row }) => {

@@ -293,6 +293,7 @@ export default async function EventDetailsPage({ params }: { params: { slug: str
       const dummyEvent:Event = {
         id: "1",
         name: "Sample Event",
+        image: "/MASTHANI_NIGHT.jpeg",
         date: "2024-07-17",
         time: "10:00 AM",
         location: "NIBM Auditorium",
@@ -302,6 +303,7 @@ export default async function EventDetailsPage({ params }: { params: { slug: str
         mealProvided: true,
         ticketPrice: 20,
         description: "This is a sample event description.",
+        status: 1,
       };
     return (
         <div>
