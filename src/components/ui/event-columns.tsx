@@ -125,6 +125,11 @@ export const eventColumns: ColumnDef<Event>[] = [
               View Details
             </DropdownMenuItem>
             </Link>
+            <Link href={`/dashboard/events/${event.slug}/edit`}>
+            <DropdownMenuItem>
+              Edit Event
+            </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Mark as default</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
