@@ -34,7 +34,9 @@ function AccountOptions() {
           <Link href="/dashboard/settings" prefetch={false}>
             <DropdownMenuItem>Settings</DropdownMenuItem>
           </Link>
+          <Link href="/support" prefetch={false}>
           <DropdownMenuItem>Support</DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Link href="/login">Logout</Link>
