@@ -134,7 +134,7 @@ export function TicketTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <div className="flex flex-1 items-center space-x-2">
+        <div className="flex flex-col md:flex-row gap-2 flex-1 md:items-center space-x-2">
           <Input
             placeholder="Filter emails..."
             value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
