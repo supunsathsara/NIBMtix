@@ -22,7 +22,7 @@ function ParticipantDetails({data}: {data: Participant[]}) {
   return (
     <div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <Card>
+            <Card className="bg-muted/40">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium uppercase">
                   Attendance
@@ -49,7 +49,7 @@ function ParticipantDetails({data}: {data: Participant[]}) {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-muted/40">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium uppercase">
                   dietary requirements
@@ -82,7 +82,7 @@ function ParticipantDetails({data}: {data: Participant[]}) {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-muted/40">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
                   Meals & Refreshments

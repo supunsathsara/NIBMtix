@@ -294,7 +294,7 @@ export default async function ParticipantsPage() {
   ];
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full ">
       <MobileNav active="Participants" />
 
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 w-full">

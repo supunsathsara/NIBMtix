@@ -57,7 +57,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
     name: "Participants",
   },
   {
-    href: "#",
+    href: "/dashboard/settings",
     icon: SettingsIcon,
     srText: "Settings",
     name: "Settings",
