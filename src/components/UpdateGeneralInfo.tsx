@@ -14,7 +14,6 @@ const UpdateGeneralInfo = () => {
           <Label htmlFor="name">Name</Label>
           <Input id="name" placeholder="Enter your name" />
         </div>
-        ƒ
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input id="email" placeholder="Enter your email" type="email" />
