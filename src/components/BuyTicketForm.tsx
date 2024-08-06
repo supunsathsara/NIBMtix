@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -67,18 +67,6 @@ const BuyTicketForm = () => {
   }
 
   return (
-    <Card className="bg-muted/60 md:w-[40vw] mt-6 px-4">
-      <CardHeader>
-        <CardTitle>
-          Ticket Information
-          <p className="font-normal text-sm text-gray-50 relative z-10 my-4 flex items-center gap-3">
-            <span className="bg-yellow-500 text-black px-3 py-1 rounded-full">
-              LKR: 1000
-            </span>
-          </p>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 px-8">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -249,8 +237,7 @@ const BuyTicketForm = () => {
             </Button>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      
   );
 };
 export default BuyTicketForm;
