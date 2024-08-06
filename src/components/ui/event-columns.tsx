@@ -113,7 +113,7 @@ export const eventColumns: ColumnDef<Event>[] = [
             <DropdownMenuItem
               onClick={() =>
                 navigator.clipboard.writeText(
-                  `https://example.com/buy/${event.slug}`
+                  `https://example.com/events/${event.slug}`
                 )
               }
             >
