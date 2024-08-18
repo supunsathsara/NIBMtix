@@ -1,3 +1,4 @@
+import { signOut } from "@/actions/Auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -38,9 +39,11 @@ function AccountOptions() {
           <DropdownMenuItem>Support</DropdownMenuItem>
           </Link>
           <DropdownMenuSeparator />
+          <form action={signOut}>
           <DropdownMenuItem>
-            <Link href="/login">Logout</Link>
+            <button>Logout</button>
           </DropdownMenuItem>
+          </form>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
