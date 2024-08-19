@@ -73,7 +73,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
               <p className="text-lg font-semibold">
                 Meal Provided:{" "}
                 <span className="font-normal">
-                  {event.meal_provided ? "Yes" : "No"}
+                  {event.meal_provides ? "Yes" : "No"}
                 </span>
               </p>
               <p className="text-lg font-semibold">

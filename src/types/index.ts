@@ -18,7 +18,7 @@ export type Event = {
   tickets_sold?: number;
   ticket_price: number;
   slug: string;
-  meal_provided: boolean;
+  meal_provides: boolean;
   description: string;
   default?: boolean;
   status: 0 | 1 | 2 | 3; // 0 = Pending, 1 = Active, 2 = Rejected, 3 = Archived
