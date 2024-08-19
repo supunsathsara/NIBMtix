@@ -23,9 +23,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
+import clearCachesByServerAction from "@/lib/revalidate";
+import { Event } from "@/types";
+import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -46,7 +49,7 @@ const EventDetailsSchema = z.object({
       "Slug can only contain lowercase alphabets, numbers and hyphens"
     ),
   mealProvided: z.boolean(),
-  price: z.number().min(0, "Price must be a positive number"),
+  ticketPrice: z.number().min(0, "Price must be a positive number"),
   description: z.string().min(1, "Description is required"),
   image: z.instanceof(File).optional(),
 });
@@ -59,21 +62,64 @@ export default function EditEventPage({
   const { toast } = useToast();
   const router = useRouter();
 
+  const [eventData, setEventData] = useState<Event | null>(null);
+
   const form = useForm({
     resolver: zodResolver(EventDetailsSchema),
     defaultValues: {
-      name: "",
-      date: "",
-      time: "",
-      location: "",
-      availableTickets: 0,
-      slug: "",
-      mealProvided: false,
-      price: 0,
-      description: "",
-      image: undefined,
+      name: eventData?.name || "", // Field for event name
+      date: eventData?.date || "", // Field for event date
+      time: eventData?.time || "", // Field for event time
+      location: eventData?.location || "", // Field for event location
+      availableTickets: eventData?.available_tickets || 0, // Field for available tickets
+      slug: eventData?.slug || "", // Field for event slug
+      mealProvided: eventData?.meal_provided || false, // Field for meal provided (boolean)
+      ticketPrice: eventData?.ticket_price || 0, // Field for ticket price
+      description: eventData?.description || "", // Field for event description
+      image: undefined, // Field for event image (can be URL or file)
     },
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const supabase = createClient();
+      const { data: eventData, error } = await supabase
+        .from("events_view")
+        .select()
+        .eq("slug", params.slug)
+        .single()
+        .returns<Event[]>();
+
+      if (error && error.code === "PGRST116") {
+        notFound();
+      }
+
+      if (error) {
+        console.error(error.message);
+        return <div>ERROR</div>;
+      }
+
+      console.log(eventData);
+      setEventData(eventData);
+
+      form.reset({
+        name: eventData?.name || "", // Field for event name
+        date: eventData?.date || "", // Field for event date
+        time: eventData?.time || "", // Field for event time
+        location: eventData?.location || "", // Field for event location
+        availableTickets: eventData?.available_tickets || 0, // Field for available tickets
+        slug: eventData?.slug || "", // Field for event slug
+        mealProvided: eventData?.meal_provided || false, // Field for meal provided (boolean)
+        ticketPrice: eventData?.ticket_price || 0, // Field for ticket price
+        description: eventData?.description || "", // Field for event description
+        image: undefined, // Field for event image (can be URL or file)
+      });
+
+      setSlug(eventData?.slug || "");
+    };
+
+    fetchData();
+  }, [form, params.slug]);
 
   const [slug, setSlug] = useState("");
   const [isSlugAvailable, setIsSlugAvailable] = useState(false);
@@ -81,16 +127,49 @@ export default function EditEventPage({
   const [eventImage, setEventImage] = useState<File | null>(null);
   const [fileInputValue, setFileInputValue] = useState<string>("");
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const debouncedSlug = useDebounce({ value: slug, delay: 2000 });
 
-  const checkSlugAvailability = useCallback((slug: string) => {
-    setIsSlugChecking(true);
-    if (slug) {
-      const isAvailable: boolean = !slug.includes("taken");
-      setIsSlugAvailable(isAvailable);
-    }
-    setIsSlugChecking(false);
-  }, []);
+  const checkSlugAvailability = useCallback(
+    async (slug: string) => {
+      setIsSlugChecking(true);
+      if (slug) {
+        // const isAvailable: boolean = !slug.includes("taken");
+        // setIsSlugAvailable(isAvailable);
+
+        if (slug === eventData?.slug) {
+          setIsSlugAvailable(true);
+          setIsSlugChecking(false);
+          return;
+        }
+
+        try {
+          const supabase = createClient();
+          // Query Supabase to check if the slug already exists
+          const { data, error } = await supabase
+            .from("events")
+            .select("slug")
+            .eq("slug", slug)
+            .single();
+
+          if (error && error.code !== "PGRST116") {
+            // Ignore the "no rows" error
+            console.error("Error checking slug availability:", error.message);
+            setIsSlugAvailable(false);
+          } else {
+            const isAvailable = data === null; // If no data is returned, slug is available
+            setIsSlugAvailable(isAvailable);
+          }
+        } catch (err) {
+          console.error("Unexpected error:", err);
+          setIsSlugAvailable(false);
+        }
+      }
+      setIsSlugChecking(false);
+    },
+    [eventData?.slug]
+  );
 
   useEffect(() => {
     checkSlugAvailability(debouncedSlug);
@@ -118,9 +197,80 @@ export default function EditEventPage({
     setIsSlugChecking(true);
   };
 
-  function onSubmit(values: z.infer<typeof EventDetailsSchema>) {
+  async function onSubmit(values: z.infer<typeof EventDetailsSchema>) {
     // ✅ This will be type-safe and validated.
     console.log(values);
+    setIsUploading(true);
+
+    const supabase = createClient();
+
+    const session = await supabase.auth.getSession();
+
+    const userId = session.data.session?.user.id;
+
+    let imageURL = eventData?.image;
+
+    if (values.image) {
+      // Extract the file extension from the file name
+      const fileExtension = values.image.name.split(".").pop();
+
+      // Construct the upload path with the file extension
+      const uploadPath = `${userId}/${values.slug}.${fileExtension}`;
+
+      const { data: imageData, error: imageError } = await supabase.storage
+        .from("events")
+        .upload(uploadPath, values.image, {
+          upsert: true,
+        });
+
+      if (imageError) {
+        // Show error toast
+        toast({
+          title: "Error",
+          description: "Failed to upload image",
+          type: "foreground",
+        });
+        setIsUploading(false);
+
+        return;
+      }
+
+      imageURL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${imageData.fullPath}`;
+    }
+
+    //Adding the Event
+
+    const newEvent = {
+      name: values.name,
+      date: values.date,
+      time: values.time,
+      location: values.location,
+      available_tickets: values.availableTickets,
+      ticket_price: values.ticketPrice,
+      slug: values.slug,
+      image: imageURL,
+      meal_provides: values.mealProvided,
+      description: values.description,
+      default: false,
+    };
+
+    const { data: createdEvent, error: insertError } = await supabase
+      .from("events")
+      .update([newEvent])
+      .eq("slug", params.slug)
+      .select();
+
+    if (insertError) {
+      console.error("Error adding event:", insertError.message);
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to create event",
+        type: "foreground",
+      });
+    }
+
+    setIsUploading(false);
 
     // Show success toast
     toast({
@@ -129,6 +279,7 @@ export default function EditEventPage({
       type: "foreground",
     });
 
+    clearCachesByServerAction(`/dashboard/events/${values.slug}`);
     router.push("/dashboard/events");
   }
 
@@ -330,7 +481,7 @@ export default function EditEventPage({
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="price"
+                name="ticketPrice"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Ticket Price</FormLabel>
@@ -420,6 +571,17 @@ export default function EditEventPage({
                     </Button>
                   </div>
                 )}
+
+                {eventData?.image && !eventImage && (
+                  <div className="flex items-center gap-4 pt-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={eventData.image}
+                      alt="Event Image"
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                  </div>
+                )}
               </div>
 
               <div>
@@ -445,8 +607,12 @@ export default function EditEventPage({
               </div>
             </div>
             <div className="col-span-2 flex justify-end">
-              <Button type="submit" className="w-fit sm:w-auto">
-                Update Event
+              <Button
+                type="submit"
+                className="w-fit sm:w-auto"
+                disabled={isUploading || !isSlugAvailable}
+              >
+                {isUploading ? "Updating..." : "Update Event"}
               </Button>
             </div>
           </form>

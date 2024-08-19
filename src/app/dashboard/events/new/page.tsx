@@ -23,12 +23,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
+import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -77,13 +78,37 @@ export default function NewEventsPage() {
   const [eventImage, setEventImage] = useState<File | null>(null);
   const [fileInputValue, setFileInputValue] = useState<string>("");
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const debouncedSlug = useDebounce({ value: slug, delay: 2000 });
 
-  const checkSlugAvailability = useCallback((slug: string) => {
+  const checkSlugAvailability = useCallback(async (slug: string) => {
     setIsSlugChecking(true);
     if (slug) {
-      const isAvailable: boolean = !slug.includes("taken");
-      setIsSlugAvailable(isAvailable);
+      // const isAvailable: boolean = !slug.includes("taken");
+      // setIsSlugAvailable(isAvailable);
+
+      try {
+        const supabase = createClient();
+        // Query Supabase to check if the slug already exists
+        const { data, error } = await supabase
+          .from("events")
+          .select("slug")
+          .eq("slug", slug)
+          .single();
+
+        if (error && error.code !== "PGRST116") {
+          // Ignore the "no rows" error
+          console.error("Error checking slug availability:", error.message);
+          setIsSlugAvailable(false);
+        } else {
+          const isAvailable = data === null; // If no data is returned, slug is available
+          setIsSlugAvailable(isAvailable);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        setIsSlugAvailable(false);
+      }
     }
     setIsSlugChecking(false);
   }, []);
@@ -114,9 +139,88 @@ export default function NewEventsPage() {
     setIsSlugChecking(true);
   };
 
-  function onSubmit(values: z.infer<typeof EventDetailsSchema>) {
+  async function onSubmit(values: z.infer<typeof EventDetailsSchema>) {
     // ✅ This will be type-safe and validated.
     console.log(values);
+
+    setIsUploading(true);
+
+    if (!values.image) {
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Please upload an image",
+        type: "foreground",
+      });
+      return;
+    }
+
+    const supabase = createClient();
+
+    const session = await supabase.auth.getSession();
+
+    const userId = session.data.session?.user.id;
+
+    // Extract the file extension from the file name
+    const fileExtension = values.image.name.split(".").pop();
+
+    // Construct the upload path with the file extension
+    const uploadPath = `${userId}/${values.slug}.${fileExtension}`;
+
+    const { data: imageData, error: imageError } = await supabase.storage
+      .from("events")
+      .upload(uploadPath, values.image, {
+        upsert: true,
+      });
+
+    if (imageError) {
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        type: "foreground",
+      });
+      setIsUploading(false);
+
+      return;
+    }
+
+    console.log(imageData);
+
+    //Adding the Event
+
+    const newEvent = {
+      name: values.name,
+      date: values.date,
+      time: values.time,
+      location: values.location,
+      available_tickets: values.availableTickets,
+      ticket_price: values.price,
+      slug: values.slug,
+      image: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${imageData.fullPath}`,
+      meal_provides: values.mealProvided,
+      description: values.description,
+      default: false,
+    };
+
+    const { data: eventData, error: insertError } = await supabase
+      .from("events")
+      .insert([newEvent])
+      .select();
+
+    if (insertError) {
+      console.error("Error adding event:", insertError.message);
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to create event",
+        type: "foreground",
+      });
+    } else {
+      console.log("Event added successfully:", eventData);
+    }
+
+    setIsUploading(false);
 
     // Show success toast
     toast({
@@ -439,8 +543,12 @@ export default function NewEventsPage() {
               </div>
             </div>
             <div className="col-span-2 flex justify-end">
-              <Button type="submit" className="w-fit sm:w-auto">
-                Create Event
+              <Button
+                type="submit"
+                className="w-fit sm:w-auto"
+                disabled={isUploading || !isSlugAvailable}
+              >
+                {isUploading ? "Creating..." : "Create Event"}
               </Button>
             </div>
           </form>

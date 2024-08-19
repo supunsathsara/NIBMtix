@@ -10,8 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Participant } from "@/components/ui/participant-columns";
 import { Event } from "@/types";
+import { createClient } from "@/utils/supabase/server";
 import { Pencil2Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export default async function EventDetailsPage({
   params,
@@ -296,21 +298,24 @@ export default async function EventDetailsPage({
     },
   ];
 
-  const dummyEvent: Event = {
-    id: "1",
-    name: "Sample Event",
-    image: "/MASTHANI_NIGHT.jpeg",
-    date: "2024-07-17",
-    time: "10:00 AM",
-    location: "NIBM Auditorium",
-    availableTickets: 100,
-    ticketsSold: 50,
-    slug: "sample-event",
-    mealProvided: true,
-    ticketPrice: 20,
-    description: "This is a sample event description.",
-    status: 1,
-  };
+  const supabase = createClient();
+
+  const { data: eventData, error } = await supabase
+    .from("events_view")
+    .select()
+    .eq("slug", params.slug)
+    .single()
+    .returns<Event[]>();
+
+  if (error && error.code == "PGRST116") {
+    notFound();
+  }
+
+  if (error) {
+    console.error(error.message);
+    return <div>ERROR</div>;
+  }
+
   return (
     <div>
       <Breadcrumb className="hidden md:flex ml-6 -mt-12 z-40 absolute mb-4">
@@ -342,7 +347,7 @@ export default async function EventDetailsPage({
       </Breadcrumb>
       <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full px-7">
         <div className="pb-6 mt-2">
-          <h2 className="text-2xl font-bold tracking-tight">{params.slug}</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{eventData.name}</h2>
           <p className="text-muted-foreground">
             Here&apos;s the details for {params.slug}
           </p>
@@ -350,13 +355,13 @@ export default async function EventDetailsPage({
           <div className="mt-6 flex justify-end">
             <Link href={`/dashboard/events/${params.slug}/edit`}>
               <Button color="primary" size="lg">
-              <Pencil2Icon className="h-6 w-6 mr-2" />
-                Edit 
+                <Pencil2Icon className="h-6 w-6 mr-2" />
+                Edit
               </Button>
             </Link>
           </div>
         </div>
-        <EventDetails event={dummyEvent} />
+        <EventDetails event={eventData} />
 
         <ParticipantDetails data={dummyData} />
       </main>

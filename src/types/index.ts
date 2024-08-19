@@ -14,11 +14,11 @@ export type Event = {
   date: string;
   time: string;
   location: string;
-  availableTickets: number;
-  ticketsSold: number;
-  ticketPrice: number;
+  available_tickets: number;
+  tickets_sold?: number;
+  ticket_price: number;
   slug: string;
-  mealProvided: boolean;
+  meal_provided: boolean;
   description: string;
   default?: boolean;
   status: 0 | 1 | 2 | 3; // 0 = Pending, 1 = Active, 2 = Rejected, 3 = Archived
@@ -32,4 +32,17 @@ export type Ticket = {
   arrival: string;
   paymentMethod: 1 | 2; // 1 = Cash, 2 = Card
   status: 0 | 1 | 2; // 0 = not-paid, 1 = paid, 2 = refunded
+};
+
+
+export type Participant = {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  mealType: string;
+  refreshments: number;
+  lunch: number;
+  attendance: number;
+  arrival: string;
 };

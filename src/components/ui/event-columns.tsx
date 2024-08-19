@@ -56,17 +56,39 @@ export const eventColumns: ColumnDef<Event>[] = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) => {
+      return (
+        <span>
+          {new Date(row.original.date).toLocaleDateString("en-US", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })}
+        </span>
+      );
+    }
   },
   {
     accessorKey: "time",
     header: "Time",
+    cell: ({ row }) => {
+      return (
+        <span>
+          {new Date(`1970-01-01T${row.original.time}`).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}
+        </span>
+      );
+    }
   },
   {
     accessorKey: "location",
     header: "Location",
   },
   {
-    accessorKey: "ticketsSold",
+    accessorKey: "tickets_sold",
     header: "Tickets Sold",
   },
   {
