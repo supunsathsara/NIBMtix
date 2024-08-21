@@ -113,6 +113,8 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
           _payment_method: paymentMethod || null,
           _status: null, // Pass null to omit status
           _event_id: eventData.id,
+          _event_name: eventData.name,
+          _event_image: eventData.image,
         };
       } else {
         newTicket = {
@@ -124,7 +126,9 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
           _payment_method: paymentMethod || null,
           _status: ticketStatus, // Pass the status value
           _event_id: eventData.id,
-        };
+          _event_name: eventData.name,
+          _event_image: eventData.image,
+        }
       }
 
       const { data: ticketData, error: insertError } = await supabase.rpc(
