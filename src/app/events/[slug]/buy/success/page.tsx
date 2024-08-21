@@ -110,7 +110,7 @@ const SuccessPage = async ({
                       Payment Pending
                     </h2>
                     <p className="text-gray-700 mt-2">
-                      Please pay the amount of
+                      Please pay the amount of{" "}
                       {Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "LKR",
