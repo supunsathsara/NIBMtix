@@ -88,7 +88,7 @@ const TicketPDF = ({
       title={`${eventDetails.attendeeName} - ${eventDetails.name} Ticket`}
     >
       <Page size="A5" style={styles.page} orientation="landscape">
-        <Image style={styles.logo} src="http://localhost:3000/base.png" />
+        <Image style={styles.logo} src="https://nibmtix.vercel.app/base.png" />
         <View style={styles.section}>
           <View>
             <Text style={styles.header}>Swara Mansala</Text>
