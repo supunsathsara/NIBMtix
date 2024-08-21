@@ -91,7 +91,7 @@ const TicketPDF = ({
         <Image style={styles.logo} src="https://nibmtix.vercel.app/base.png" />
         <View style={styles.section}>
           <View>
-            <Text style={styles.header}>Swara Mansala</Text>
+            <Text style={styles.header}>{eventDetails.name}</Text>
             <View style={styles.details}>
               <Text style={styles.text}>
                 Date:{" "}
