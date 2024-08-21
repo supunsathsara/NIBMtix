@@ -25,8 +25,10 @@ import { Event } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { ClipboardCopy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -67,6 +69,10 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
   const { toast } = useToast();
   const router = useRouter();
 
+  const [error, setError] = useState<string | null>(null);
+  const [paymentOrderId, setPaymentOrderId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
   const form = useForm<TicketsRegistrationSchemaType>({
     resolver: zodResolver(TicketsRegistrationSchema),
     defaultValues: {
@@ -78,6 +84,13 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       paymentMethod: undefined,
     },
   });
+
+  const handleCopy = (orderId: string) => {
+    navigator.clipboard.writeText(orderId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+    });
+  };
 
   async function saveTicket(
     data: TicketsRegistrationSchemaType,
@@ -121,6 +134,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
 
       if (insertError) {
         console.error("Error adding ticket:", insertError.message);
+        setError("Sorry, we couldn't create your ticket");
         // Show error toast
         toast({
           title: "Error",
@@ -163,6 +177,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
     // payhere payment gateway
     payhere.onCompleted = function onCompleted(ticketId: string) {
       console.log("Payment completed. OrderID:" + ticketId);
+      setPaymentOrderId(ticketId);
       saveTicket(values, 2);
     };
 
@@ -200,6 +215,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       country: "Sri Lanka",
       hash: hash,
     };
+    setPaymentOrderId(null);
     //open payhere's payment selection
     payhere.startPayment(payment);
   }
@@ -211,6 +227,41 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4 md:px-4"
         >
+          {
+            // Show the error message
+            error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                {error}
+                <br />
+                {paymentOrderId && (
+                  <div className="items-center space-x-2">
+                    Please contact the organizer with the order ID:{" "}
+                    <div className="flex">
+                      <span
+                        className="bg-black/40 text-white px-3 text-sm py-1 rounded-lg cursor-pointer"
+                        title="Order ID"
+                        onClick={() => handleCopy(paymentOrderId)}
+                      >
+                        {paymentOrderId}
+                      </span>
+                      {!copied && (
+                        <ClipboardCopy
+                          size={24}
+                          className="cursor-pointer text-slate-950 my-auto"
+                          onClick={() => handleCopy(paymentOrderId)}
+                        />
+                      )}
+                      {copied && (
+                        <span className="text-slate-950 my-auto text-sm ml-2">
+                          Copied!
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          }
           <div className="grid grid-cols-2 gap-2">
             <div className="grid gap-2">
               <FormField
