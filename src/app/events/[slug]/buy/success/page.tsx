@@ -98,10 +98,23 @@ const SuccessPage = async ({
                   })}
                 </p>
               </div>
-              <Button className="w-fit justify-center text-center mx-auto">
-                <DownloadCloudIcon className="mr-2" />
-                Download Your Ticket
-              </Button>
+              {ticket.status === 1 && (
+                <a
+                  href={`/tickets/${searchParams.ticket}`}
+                  download={`${ticket.name.replace(/\s/g, "-")}-${
+                    ticket.event.name
+                  }-ticket.pdf`}
+                  className="w-full justify-center text-center mx-auto"
+                >
+                  <Button
+                    title={`Download Your Ticket for ${ticket.event.name}`}
+                    className="w-fit justify-center text-center mx-auto"
+                  >
+                    <DownloadCloudIcon className="mr-2" />
+                    Download Your Ticket
+                  </Button>
+                </a>
+              )}
 
               {ticket.status !== 1 && (
                 <div className="max-w-md mx-auto bg-white/80 shadow-lg rounded-lg p-6 -mt-2">
