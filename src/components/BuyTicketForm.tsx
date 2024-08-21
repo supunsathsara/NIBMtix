@@ -204,7 +204,9 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       notify_url: process.env.NEXT_PUBLIC_PAYHERE_NOTIFY_URL,
       order_id: ticketId,
       items: eventData.name + " Ticket",
-      amount: Number(eventData.ticket_price).toFixed(2),
+      amount: Number(
+        eventData.ticket_price + eventData.ticket_price * 0.05
+      ).toFixed(2),
       currency: "LKR",
       first_name: values.name.split(" ")[0],
       last_name: values.name.split(" ")[1] || "",
@@ -215,6 +217,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       country: "Sri Lanka",
       hash: hash,
     };
+    console.log(payment)
     setPaymentOrderId(null);
     //open payhere's payment selection
     payhere.startPayment(payment);
@@ -420,6 +423,10 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
                               <span>Cash</span>
                             </Label>
                           </div>
+                          <span className="text-sm text-gray-500">
+                            Please note that all digital payments are subjected
+                            to a 5% service charge.
+                          </span>
                         </RadioGroup>
                       </FormControl>
                       <FormMessage />

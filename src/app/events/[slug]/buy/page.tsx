@@ -11,7 +11,7 @@ import {
   TicketCheckIcon,
 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const TicketBuyPage = async ({ params }: { params: { slug: string } }) => {
   const supabase = createClient();
@@ -34,9 +34,22 @@ const TicketBuyPage = async ({ params }: { params: { slug: string } }) => {
 
   const ticketId = uuidv4();
 
-  const hashedMerchantSecret = createHash('md5').update(process.env.PAYHERE_MERCHANT_SECRET!).digest('hex').toUpperCase();
-  const hash = createHash('md5').update(process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID + ticketId + Number(eventData.ticket_price).toFixed(2) + "LKR" + hashedMerchantSecret).digest('hex').toUpperCase();
-
+  const hashedMerchantSecret = createHash("md5")
+    .update(process.env.PAYHERE_MERCHANT_SECRET!)
+    .digest("hex")
+    .toUpperCase();
+  const hash = createHash("md5")
+    .update(
+      process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID +
+        ticketId +
+        Number(eventData.ticket_price + eventData.ticket_price * 0.05).toFixed(
+          2
+        ) +
+        "LKR" +
+        hashedMerchantSecret
+    )
+    .digest("hex")
+    .toUpperCase();
 
   return (
     <div className="flex flex-col md:flex-row w-full">
@@ -68,7 +81,11 @@ const TicketBuyPage = async ({ params }: { params: { slug: string } }) => {
             </CardHeader>
             <CardContent className="space-y-4 px-4 flex flex-col md:flex-row gap-2">
               <div className="md:w-1/2">
-                <BuyTicketForm eventData={eventData} hash={hash} ticketId={ticketId} />
+                <BuyTicketForm
+                  eventData={eventData}
+                  hash={hash}
+                  ticketId={ticketId}
+                />
               </div>
               <div className="md:w-1/2 h-full mx-auto group/card mt-8">
                 <div
