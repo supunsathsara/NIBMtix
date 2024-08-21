@@ -350,6 +350,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
                         <RadioGroup
                           id="paymentMethod"
                           {...field}
+                          onValueChange={field.onChange}
                           value={field.value || ""}
                         >
                           <div className="flex space-x-4">
