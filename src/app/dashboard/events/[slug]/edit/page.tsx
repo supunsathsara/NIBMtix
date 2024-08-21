@@ -73,7 +73,7 @@ export default function EditEventPage({
       location: eventData?.location || "", // Field for event location
       availableTickets: eventData?.available_tickets || 0, // Field for available tickets
       slug: eventData?.slug || "", // Field for event slug
-      mealProvided: eventData?.meal_provided || false, // Field for meal provided (boolean)
+      mealProvided: eventData?.meal_provides || false, // Field for meal provided (boolean)
       ticketPrice: eventData?.ticket_price || 0, // Field for ticket price
       description: eventData?.description || "", // Field for event description
       image: undefined, // Field for event image (can be URL or file)

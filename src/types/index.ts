@@ -28,12 +28,16 @@ export type Ticket = {
   id: string;
   name: string;
   email: string;
-  attendance: number; // 0 = not-attended, 1 = attended
-  arrival: string;
-  paymentMethod: 1 | 2; // 1 = Cash, 2 = Card
+  payment_method: 1 | 2 | null; // 1 = Cash, 2 = Card, null = free
   status: 0 | 1 | 2; // 0 = not-paid, 1 = paid, 2 = refunded
+  mobile?: string;
+  meal_type?: number | null;
+  refreshments?: 0 | 1 | null;
+  lunch?: 0 | 1 | null;
+  attendance: 0 | 1; // 0 = not-attended, 1 = attended
+  arrival: string | null;
+  event_id?: string;
 };
-
 
 export type Participant = {
   id: string;

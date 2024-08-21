@@ -42,7 +42,7 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
     accessorKey: "paymentMethod",
     header: "Payment Method",
     cell: ({ row }) => {
-      return row.original.paymentMethod === 1 ? (
+      return row.original.payment_method === 1 ? (
         <Badge variant="outline">Cash</Badge>
       ) : (
         <Badge variant="outline">Card</Badge>

@@ -141,7 +141,7 @@ export default function NewEventsPage() {
 
   async function onSubmit(values: z.infer<typeof EventDetailsSchema>) {
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    // console.log(values);
 
     setIsUploading(true);
 
@@ -185,8 +185,6 @@ export default function NewEventsPage() {
       return;
     }
 
-    console.log(imageData);
-
     //Adding the Event
 
     const newEvent = {
@@ -217,7 +215,7 @@ export default function NewEventsPage() {
         type: "foreground",
       });
     } else {
-      console.log("Event added successfully:", eventData);
+      //console.log("Event added successfully:", eventData);
     }
 
     setIsUploading(false);
