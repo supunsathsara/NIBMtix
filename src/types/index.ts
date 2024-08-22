@@ -50,3 +50,16 @@ export type Participant = {
   attendance: number;
   arrival: string;
 };
+
+export interface TicketConfirmationProps {
+  username: string;
+  event: string;
+  eventImage: string;
+  date: string;
+  time: string;
+  location: string;
+  ticketId: string;
+  ticketUrl: string;
+  subject: string;
+  userEmail:string;
+}

@@ -39,13 +39,16 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
     header: "Email",
   },
   {
-    accessorKey: "paymentMethod",
+    accessorKey: "payment_method",
     header: "Payment Method",
     cell: ({ row }) => {
       return row.original.payment_method === 1 ? (
         <Badge variant="outline">Cash</Badge>
-      ) : (
+      ) : row.original.payment_method === 2 ? (
         <Badge variant="outline">Card</Badge>
+      ):
+      (
+        <Badge variant="outline">Free</Badge>
       );
     },
     filterFn: (rows, id, filterValue) => {

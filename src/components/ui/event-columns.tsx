@@ -1,5 +1,6 @@
 "use client";
 
+import { markEventAsDefault } from "@/actions/events";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,13 +8,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Event } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  MoreHorizontal
-} from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 /*
@@ -66,7 +65,7 @@ export const eventColumns: ColumnDef<Event>[] = [
           })}
         </span>
       );
-    }
+    },
   },
   {
     accessorKey: "time",
@@ -74,14 +73,17 @@ export const eventColumns: ColumnDef<Event>[] = [
     cell: ({ row }) => {
       return (
         <span>
-          {new Date(`1970-01-01T${row.original.time}`).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-          })}
+          {new Date(`1970-01-01T${row.original.time}`).toLocaleTimeString(
+            "en-US",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            }
+          )}
         </span>
       );
-    }
+    },
   },
   {
     accessorKey: "location",
@@ -108,7 +110,7 @@ export const eventColumns: ColumnDef<Event>[] = [
         statusText = "Rejected";
       } else if (event.status === 3) {
         statusColor = "gray";
-        statusText = "Archived"
+        statusText = "Archived";
       }
 
       return (
@@ -143,16 +145,18 @@ export const eventColumns: ColumnDef<Event>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <Link href={`/dashboard/events/${event.slug}`}>
-            <DropdownMenuItem>
-              View Details
-            </DropdownMenuItem>
+              <DropdownMenuItem>View Details</DropdownMenuItem>
             </Link>
             <Link href={`/dashboard/events/${event.slug}/edit`}>
-            <DropdownMenuItem>
-              Edit Event
-            </DropdownMenuItem>
+              <DropdownMenuItem>Edit Event</DropdownMenuItem>
             </Link>
-            <DropdownMenuItem>Mark as default</DropdownMenuItem>
+            {!event.default && (
+              <DropdownMenuItem
+                onClick={async () => await markEventAsDefault(event.id)}
+              >
+                Mark as default
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

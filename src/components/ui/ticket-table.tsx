@@ -156,7 +156,7 @@ export function TicketTable<TData, TValue>({
           />
 
           <DataTableFacetedFilter
-            column={table.getColumn("paymentMethod")}
+            column={table.getColumn("payment_method")}
             title="Payment Method"
             options={paymentMethods}
           />

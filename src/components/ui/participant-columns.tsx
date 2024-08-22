@@ -19,7 +19,11 @@ import {
   ClockIcon,
   MoreHorizontal,
 } from "lucide-react";
-
+import {
+  toggleAttendance,
+  toggleLunch,
+  toggleRefreshments,
+} from "@/actions/tickets";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -28,29 +32,11 @@ export type Participant = {
   name: string;
   email: string;
   mobile: string;
-  mealType: string;
+  meal_type: number;
   refreshments: number;
   lunch: number;
   attendance: number;
   arrival: string;
-};
-
-
-
-
-//toggle functions
-export const toggleAttendance = (id: String) => {
-  console.log("toggleAttendance", id);  
-
-  window.location.reload()
-};
-
-export const toggleRefreshments = (id: String) => {
-  console.log("toggleRefreshments", id);
-};
-
-export const toggleLunch = (id: String) => {
-  console.log("toggleLunch", id);
 };
 
 export const participantColumns: ColumnDef<Participant>[] = [
@@ -72,8 +58,20 @@ export const participantColumns: ColumnDef<Participant>[] = [
     header: "Mobile",
   },
   {
-    accessorKey: "mealType",
+    accessorKey: "meal_type",
     header: "Meal Type",
+    cell: ({ row }) => {
+      //row.original.meal_type 1 - NON VEG, 2 - VEG 3 - FISH
+      return row.original.meal_type === 3 ? (
+        <span>Fish</span>
+      ) : row.original.meal_type === 2 ? (
+        <span>Veg</span>
+      ) : row.original.meal_type === 1 ? (
+        <span>Non-Veg</span>
+      ) : (
+        <span>-</span>
+      );
+    },
   },
   {
     accessorKey: "refreshments",
@@ -132,6 +130,20 @@ export const participantColumns: ColumnDef<Participant>[] = [
   {
     accessorKey: "arrival",
     header: "Arrival",
+    cell: ({ row }) => {
+      //row.original.lunch
+      return row.original.attendance === 1 ? (
+        <span className="text-green-600 flex gap-1">
+          {new Date(row.original.arrival).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+          <ClockIcon className="h-4 w-4 my-auto" />
+        </span>
+      ) : (
+        <span className="text-yellow-600 flex gap-1">-</span>
+      );
+    },
   },
   {
     id: "actions",
@@ -153,16 +165,29 @@ export const participantColumns: ColumnDef<Participant>[] = [
               Copy participant ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => toggleAttendance(participant.id)}>
+            <DropdownMenuItem
+              onClick={async () =>
+                await toggleAttendance(participant.id, participant.attendance)
+              }
+            >
               Mark as {participant.attendance === 1 ? "pending" : "arrived"}
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => toggleRefreshments(participant.id)}
+              onClick={async () =>
+                await toggleRefreshments(
+                  participant.id,
+                  participant.refreshments
+                )
+              }
             >
               Mark as refr...{" "}
               {participant.refreshments === 1 ? "pending" : "collected"}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleLunch(participant.id)}>
+            <DropdownMenuItem
+              onClick={async () =>
+                await toggleLunch(participant.id, participant.lunch)
+              }
+            >
               Mark as lunch {participant.lunch === 1 ? "pending" : "collected"}
             </DropdownMenuItem>
           </DropdownMenuContent>
