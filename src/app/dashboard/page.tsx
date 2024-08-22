@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,11 +5,6 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 import {
   Table,
   TableBody,
@@ -21,19 +14,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  XAxis,
-} from "recharts";
 
 import AccountOptions from "@/components/AccountOptions";
 import MobileNav from "@/components/MobileNav";
+import PaymentsPieChart from "@/components/PaymentsPieChart";
+import RevenueLineChart from "@/components/RevenueLineChart";
+import SalesBarChart from "@/components/SalesBarChart";
 import SheetNav from "@/components/SheetNav";
 import {
   CalendarIcon,
@@ -41,8 +27,24 @@ import {
   TicketIcon,
   UsersIcon,
 } from "@/components/ui/Icons";
+import { createClient } from "@/utils/supabase/server";
+import { CalendarClock, CreditCard } from "lucide-react";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("event_dashboard")
+    .select("*")
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("An error occurred while fetching data");
+  }
+
+  console.log(data.event_dashboard);
+  const dashboardData = data.event_dashboard;
+
   return (
     <div className="flex min-h-screen w-full">
       <MobileNav active="Dashboard" />
@@ -73,9 +75,11 @@ export default function DashboardPage() {
                 <TicketIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">12,345</div>
+                <div className="text-2xl font-bold">
+                  {dashboardData.total_ticket_sales}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  +10.2% from last month
+                  {dashboardData.tickets_available} tickets available
                 </p>
               </CardContent>
             </Card>
@@ -87,37 +91,60 @@ export default function DashboardPage() {
                 <DollarSignIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$125,678.90</div>
+                <div className="text-2xl font-bold">
+                  {Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "LKR",
+                  }).format(dashboardData.total_revenue)}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  +15.4% from last month
+                  from {dashboardData.total_ticket_sales} tickets sold
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Upcoming Events
+                  Unpaid Tickets
                 </CardTitle>
-                <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+                <CalendarClock className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">24</div>
+                <div className="text-2xl font-bold">
+                  {dashboardData.total_unpaid_tickets}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  +3 from last month
+                  {Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "LKR",
+                  }).format(
+                    dashboardData.total_unpaid_tickets *
+                      dashboardData.ticket_price
+                  )}{" "}
+                  unpaid
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  New Customers
+                  Attended People
                 </CardTitle>
                 <UsersIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,234</div>
+                <div className="text-2xl font-bold">
+                  {dashboardData.attended_people}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
+                  {dashboardData.total_ticket_sales > 0
+                    ? (
+                        (dashboardData.attended_people /
+                          dashboardData.total_ticket_sales) *
+                        100
+                      ).toFixed(2)
+                    : 0}
+                  % of total tickets sold
                 </p>
               </CardContent>
             </Card>
@@ -131,7 +158,10 @@ export default function DashboardPage() {
                 <TicketIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <BarchartChart className="aspect-square" />
+                <SalesBarChart
+                  className="aspect-square"
+                  data={dashboardData.tickets_by_day}
+                />
               </CardContent>
             </Card>
             <Card>
@@ -142,18 +172,25 @@ export default function DashboardPage() {
                 <DollarSignIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <LinechartChart className="aspect-[9/4]" />
+                <RevenueLineChart
+                  className="aspect-[9/4]"
+                  data={dashboardData.tickets_by_day}
+                  ticketPrice={dashboardData.ticket_price}
+                />
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Customer Demographics
+                  Payment Types
                 </CardTitle>
-                <UsersIcon className="w-4 h-4 text-muted-foreground" />
+                <CreditCard className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <PiechartcustomChart className="aspect-square" />
+                <PaymentsPieChart
+                  className="aspect-square"
+                  data={dashboardData.payment_methods}
+                />
               </CardContent>
             </Card>
           </div>
@@ -219,177 +256,6 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
-    </div>
-  );
-}
-
-function BarchartChart(props: any) {
-  return (
-    <div {...props}>
-      <ChartContainer
-        config={{
-          desktop: {
-            label: "Desktop",
-            color: "hsl(var(--chart-1))",
-          },
-        }}
-        className="min-h-[200px]"
-      >
-        <BarChart
-          accessibilityLayer
-          data={[
-            { month: "January", desktop: 186 },
-            { month: "February", desktop: 305 },
-            { month: "March", desktop: 237 },
-            { month: "April", desktop: 73 },
-            { month: "May", desktop: 209 },
-            { month: "June", desktop: 214 },
-          ]}
-        >
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
-        </BarChart>
-      </ChartContainer>
-    </div>
-  );
-}
-
-function LayoutDashboardIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="7" height="9" x="3" y="3" rx="1" />
-      <rect width="7" height="5" x="14" y="3" rx="1" />
-      <rect width="7" height="9" x="14" y="12" rx="1" />
-      <rect width="7" height="5" x="3" y="16" rx="1" />
-    </svg>
-  );
-}
-
-function LinechartChart(props: any) {
-  return (
-    <div {...props}>
-      <ChartContainer
-        config={{
-          desktop: {
-            label: "Desktop",
-            color: "hsl(var(--chart-1))",
-          },
-        }}
-      >
-        <LineChart
-          accessibilityLayer
-          data={[
-            { month: "January", desktop: 186 },
-            { month: "February", desktop: 305 },
-            { month: "March", desktop: 237 },
-            { month: "April", desktop: 73 },
-            { month: "May", desktop: 209 },
-            { month: "June", desktop: 214 },
-          ]}
-          margin={{
-            left: 12,
-            right: 12,
-          }}
-        >
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Line
-            dataKey="desktop"
-            type="natural"
-            stroke="var(--color-desktop)"
-            strokeWidth={2}
-            dot={false}
-          />
-        </LineChart>
-      </ChartContainer>
-    </div>
-  );
-}
-
-function PiechartcustomChart(props: any) {
-  return (
-    <div {...props}>
-      <ChartContainer
-        config={{
-          visitors: {
-            label: "Visitors",
-          },
-          chrome: {
-            label: "Chrome",
-            color: "hsl(var(--chart-1))",
-          },
-          safari: {
-            label: "Safari",
-            color: "hsl(var(--chart-2))",
-          },
-          firefox: {
-            label: "Firefox",
-            color: "hsl(var(--chart-3))",
-          },
-          edge: {
-            label: "Edge",
-            color: "hsl(var(--chart-4))",
-          },
-          other: {
-            label: "Other",
-            color: "hsl(var(--chart-5))",
-          },
-        }}
-      >
-        <PieChart>
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Pie
-            data={[
-              { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-              { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-              {
-                browser: "firefox",
-                visitors: 187,
-                fill: "var(--color-firefox)",
-              },
-              { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-              { browser: "other", visitors: 90, fill: "var(--color-other)" },
-            ]}
-            dataKey="visitors"
-            nameKey="browser"
-          />
-        </PieChart>
-      </ChartContainer>
     </div>
   );
 }
