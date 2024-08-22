@@ -1,9 +1,9 @@
 import SuccessAnimation from "@/components/SuccessAnimation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
 import { DownloadCloudIcon } from "lucide-react";
 import { notFound } from "next/navigation";
+import { supabase } from "@/utils/supabase/serviceUser";
 
 const SuccessPage = async ({
   params,
@@ -16,8 +16,7 @@ const SuccessPage = async ({
     notFound();
   }
 
-  const supabase = createClient();
-
+  // ! SHOULD BE ONLY RUN ON THE SERVER
   const { data: ticket, error } = await supabase
     .from("tickets")
     .select(
