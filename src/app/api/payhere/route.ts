@@ -44,10 +44,6 @@ export async function POST(req: Request, res: Response) {
       payment_method: method,
     };
 
-    const { data: paymentData, error: paymentInsertError } = await supabase
-      .from("payments")
-      .insert([newPayment]);
-
     const newTicket = {
       id: order_id,
       name: "system",
@@ -60,6 +56,10 @@ export async function POST(req: Request, res: Response) {
     const { data: ticketData, error: ticketInsertError } = await supabase
       .from("tickets")
       .upsert([newTicket]);
+
+    const { data: paymentData, error: paymentInsertError } = await supabase
+      .from("payments")
+      .insert([newPayment]);
 
     if (ticketInsertError) {
       return NextResponse.json({ message: "Internal server error" });
