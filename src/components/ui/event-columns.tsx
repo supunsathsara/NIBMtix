@@ -137,7 +137,7 @@ export const eventColumns: ColumnDef<Event>[] = [
             <DropdownMenuItem
               onClick={() =>
                 navigator.clipboard.writeText(
-                  `https://example.com/events/${event.slug}`
+                  `https://nibmtix.vercel.app/events/${event.slug}`
                 )
               }
             >

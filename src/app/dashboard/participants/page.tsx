@@ -27,8 +27,6 @@ export default async function ParticipantsPage() {
     console.error(error);
     throw new Error("An error occurred while fetching tickets");
   }
-
-  console.log(data);
   return (
     <div className="flex min-h-screen w-full ">
       <MobileNav active="Participants" />
@@ -63,7 +61,7 @@ export default async function ParticipantsPage() {
               Participants View
             </h2>
             <p className="text-muted-foreground">
-              Here&apos;s the participants list for EVENT NAME
+              Here&apos;s the participants list for {data[0].event_name}
             </p>
           </div>
           <ParticipantDetails data={data} />
