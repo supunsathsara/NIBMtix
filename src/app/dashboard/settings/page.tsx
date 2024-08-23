@@ -11,9 +11,36 @@ import { Separator } from "@/components/ui/separator";
 import UpdateBankAccount from "@/components/UpdateBankAccount";
 import UpdateGeneralInfo from "@/components/UpdateGeneralInfo";
 import UpdateSecurityInfo from "@/components/UpdateSecurityInfo";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
 export default async function SettingsPage() {
+  const supabase = createClient();
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getUser();
+  if (sessionError) {
+    console.error(sessionError);
+    throw new Error("An error occurred while fetching data");
+  }
+  const { data, error } = await supabase
+    .from("profiles")
+    .select(
+      `
+      id,
+      full_name,
+      mobile,
+      avatar_url,
+      bank:bank_accounts(account_name ,bank,account_number,branch)
+      `
+    )
+    .eq("id", sessionData.user.id)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("An error occurred while fetching data");
+  }
+
   return (
     <div>
       <Breadcrumb className="hidden md:flex ml-6 -mt-12 z-40 absolute mb-4">
@@ -41,10 +68,12 @@ export default async function SettingsPage() {
         </div>
 
         <div className="space-y-6 mx-1 md:mx-14 pb-12">
-          <UpdateGeneralInfo />
-          <UpdateSecurityInfo />
+          <UpdateGeneralInfo
+            data={{ ...data, email: sessionData.user.email }}
+          />
+          <UpdateSecurityInfo data={{ email: sessionData.user.email }} />
           <Separator className="my-4" />
-          <UpdateBankAccount />
+          <UpdateBankAccount profile={data} />
           <PayoutHistory />
           <Separator className="my-8" />
           <DeleteAccount />
