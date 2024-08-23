@@ -32,6 +32,7 @@ export async function POST(req: Request, res: Response) {
     .toUpperCase();
 
   if (md5sig !== hashOnSever) {
+    console.log("Invalid payment");
     return NextResponse.json({ message: "Invalid payment" });
   }
 
@@ -62,11 +63,14 @@ export async function POST(req: Request, res: Response) {
       .insert([newPayment]);
 
     if (ticketInsertError) {
+      console.log(ticketInsertError);
       return NextResponse.json({ message: "Internal server error" });
     }
 
     if (paymentInsertError) {
-      return NextResponse.json({ message: "Internal server error" });
+      console.log(paymentInsertError);
+      return NextResponse.json({ message: "Internal server error" }
+      );
     }
 
     // Respond as needed
