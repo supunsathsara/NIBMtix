@@ -10,7 +10,7 @@ import SubmitButton from "@/components/SubmitButton";
 
 const SignUpSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().min(9, "Phone number must be at least 9 characters"),
 });
