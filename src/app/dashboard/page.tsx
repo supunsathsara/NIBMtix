@@ -5,17 +5,11 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import Link from "next/link";
 
 import AccountOptions from "@/components/AccountOptions";
+import EventSummary from "@/components/EventSummary";
+import Loader from "@/components/Loader";
 import MobileNav from "@/components/MobileNav";
 import PaymentsPieChart from "@/components/PaymentsPieChart";
 import RevenueLineChart from "@/components/RevenueLineChart";
@@ -29,6 +23,7 @@ import {
 } from "@/components/ui/Icons";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarClock, CreditCard } from "lucide-react";
+import { Suspense } from "react";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -203,54 +198,9 @@ export default async function DashboardPage() {
                 <CalendarIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Event</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Tickets Sold</TableHead>
-                      <TableHead>Revenue</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Music Festival
-                      </TableCell>
-                      <TableCell>June 1, 2023</TableCell>
-                      <TableCell>5,678</TableCell>
-                      <TableCell className="text-right">$89,456.78</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Comedy Show</TableCell>
-                      <TableCell>July 15, 2023</TableCell>
-                      <TableCell>2,345</TableCell>
-                      <TableCell className="text-right">$35,678.90</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Art Exhibit</TableCell>
-                      <TableCell>August 20, 2023</TableCell>
-                      <TableCell>1,789</TableCell>
-                      <TableCell className="text-right">$27,456.12</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Tech Conference
-                      </TableCell>
-                      <TableCell>September 5, 2023</TableCell>
-                      <TableCell>3,456</TableCell>
-                      <TableCell className="text-right">$52,789.34</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Food Festival
-                      </TableCell>
-                      <TableCell>October 1, 2023</TableCell>
-                      <TableCell>4,123</TableCell>
-                      <TableCell className="text-right">$65,678.56</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <Suspense fallback={<Loader />}>
+                  <EventSummary />
+                </Suspense>
               </CardContent>
             </Card>
           </div>
