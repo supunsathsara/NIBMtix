@@ -36,8 +36,6 @@ export default async function DashboardPage() {
     console.error(error);
     throw new Error("An error occurred while fetching data");
   }
-
-  console.log(data.event_dashboard);
   const dashboardData = data.event_dashboard;
 
   return (
@@ -154,7 +152,7 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <SalesBarChart
-                  className="aspect-square"
+                  className="aspect-square py-6"
                   data={dashboardData.tickets_by_day}
                 />
               </CardContent>
@@ -168,7 +166,7 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <RevenueLineChart
-                  className="aspect-[9/4]"
+                  className="aspect-[9/4] py-6"
                   data={dashboardData.tickets_by_day}
                   ticketPrice={dashboardData.ticket_price}
                 />
@@ -183,7 +181,7 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <PaymentsPieChart
-                  className="aspect-square"
+                  className="aspect-square py-6"
                   data={dashboardData.payment_methods}
                 />
               </CardContent>

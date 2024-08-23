@@ -53,6 +53,7 @@ const RevenueLineChart = (props: any) => {
           accessibilityLayer
           data={weekData}
           margin={{
+            top: 12,
             left: 12,
             right: 12,
           }}
