@@ -22,6 +22,7 @@ export type Event = {
   description: string;
   default?: boolean;
   status: 0 | 1 | 2 | 3; // 0 = Pending, 1 = Active, 2 = Rejected, 3 = Archived
+  created_by?: string;
 };
 
 export type Ticket = {

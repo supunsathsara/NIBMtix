@@ -220,6 +220,8 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       city: "Galle",
       country: "Sri Lanka",
       hash: hash,
+      custom_1: eventData.created_by,
+      custom_2: eventData.ticket_price,
     };
     console.log(payment)
     setPaymentOrderId(null);

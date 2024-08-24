@@ -13,6 +13,8 @@ export async function POST(req: Request, res: Response) {
   const md5sig = formData.get("md5sig");
   const method = formData.get("method");
   const status_code = formData.get("status_code");
+  const event_organizer = formData.get("custom_1");
+  const ticket_price = formData.get("custom_2");
 
   //validate payment
   const hashedMerchantSecret = createHash("md5")
@@ -62,6 +64,14 @@ export async function POST(req: Request, res: Response) {
       .from("payments")
       .insert([newPayment]);
 
+    const { data: accountData, error: accountInsertError } = await supabase.rpc(
+      "update_to_be_paid",
+      {
+        p_user_id: event_organizer,
+        p_amount: ticket_price,
+      }
+    );
+
     if (ticketInsertError) {
       console.log(ticketInsertError);
       return NextResponse.json({ message: "Internal server error" });
@@ -69,8 +79,12 @@ export async function POST(req: Request, res: Response) {
 
     if (paymentInsertError) {
       console.log(paymentInsertError);
-      return NextResponse.json({ message: "Internal server error" }
-      );
+      return NextResponse.json({ message: "Internal server error" });
+    }
+
+    if (accountInsertError) {
+      console.log(accountInsertError);
+      return NextResponse.json({ message: "Internal server error" });
     }
 
     // Respond as needed
