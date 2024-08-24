@@ -9,9 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
-function AccountOptions() {
+async function AccountOptions() {
+  const supabase = createClient();
+
+  const { data: user, error: userError } = await supabase
+    .from("user_profile ")
+    .select("*")
+    .single();
+
   return (
     <div className="ml-auto flex items-center gap-2">
       <Input
@@ -22,11 +30,13 @@ function AccountOptions() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>
-            <AvatarImage
-              src="https://github.com/supunsathsara.png"
-              alt="@supunsathsara"
-            />
-            <AvatarFallback>SS</AvatarFallback>
+            <AvatarImage src={user.avatar_url} alt="User profile picture" />
+            <AvatarFallback>
+              {user.full_name
+                .split(" ")
+                .map((name: string) => name[0])
+                .join("")}
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -36,13 +46,13 @@ function AccountOptions() {
             <DropdownMenuItem>Settings</DropdownMenuItem>
           </Link>
           <Link href="/support" prefetch={false}>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem>Support</DropdownMenuItem>
           </Link>
           <DropdownMenuSeparator />
           <form action={signOut}>
-          <DropdownMenuItem>
-            <button>Logout</button>
-          </DropdownMenuItem>
+            <DropdownMenuItem>
+              <button>Logout</button>
+            </DropdownMenuItem>
           </form>
         </DropdownMenuContent>
       </DropdownMenu>
