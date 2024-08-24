@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FaLocationArrow } from "react-icons/fa6";
+import { FaBan, FaLocationArrow } from "react-icons/fa6";
 
 const EventLandingPage = async ({ params }: { params: { slug: string } }) => {
   const supabase = createClient();
@@ -64,15 +64,31 @@ const EventLandingPage = async ({ params }: { params: { slug: string } }) => {
             </div>
           </div>
           <div className="mt-8">
-            <CountDown targetDate={new Date(`${eventData.date}T${eventData.time}`)} />
-          </div>
-          <Link href={`/events/${params.slug}/buy`} className="mt-10 md:mt-6">
-            <MagicButton
-              title="Buy Tickets Now"
-              icon={<FaLocationArrow />}
-              position="right"
+            <CountDown
+              targetDate={new Date(`${eventData.date}T${eventData.time}`)}
             />
-          </Link>
+          </div>
+
+          {eventData.available_tickets > 0 && (
+            <Link href={`/events/${params.slug}/buy`} className="mt-10 md:mt-6">
+              <MagicButton
+                title="Buy Tickets Now"
+                icon={<FaLocationArrow />}
+                position="right"
+              />
+            </Link>
+          )}
+
+          {eventData.available_tickets <= 0 && (
+            <div className="mt-10 md:mt-6">
+              <MagicButton
+                title="Tickets Sold Out"
+                icon={<FaBan />}
+                position="right"
+                disabled
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="relative w-3/4 mx-auto">
