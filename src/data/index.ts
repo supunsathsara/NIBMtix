@@ -63,3 +63,31 @@ export const dashboardNavItems: DashboardNavItem[] = [
     name: "Settings",
   },
 ];
+
+
+export const adminDashboardNavItems: DashboardNavItem[] = [
+  {
+    href: "/admin",
+    icon: LayoutDashboardIcon,
+    srText: "Dashboard",
+    name: "Dashboard",
+  },
+  {
+    href: "/admin/events",
+    icon: CalendarIcon,
+    srText: "Events",
+    name: "Events",
+  },
+  {
+    href: "/admin/payments",
+    icon: DollarSignIcon,
+    srText: "Payments",
+    name: "Payments",
+  },
+  {
+    href: "/admin/settings",
+    icon: SettingsIcon,
+    srText: "Settings",
+    name: "Settings",
+  },
+];

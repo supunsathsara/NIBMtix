@@ -64,3 +64,10 @@ export interface TicketConfirmationProps {
   subject: string;
   userEmail:string;
 }
+
+
+export interface PaymentColumns {
+  user_id: string;
+  user_name : string;
+  to_be_paid: number;
+}
