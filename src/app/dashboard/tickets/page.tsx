@@ -12,15 +12,15 @@ import { TicketColumns } from "@/components/ui/ticket-columns";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function TicketsPage() {
-
   const supabase = createClient();
-  const { data, error } = await supabase.from("view_tickets_for_default_event").select('id,name,email,mobile,attendance,payment_method,status,event_name');
+  const { data, error } = await supabase
+    .from("view_tickets_for_default_event")
+    .select("id,name,email,mobile,attendance,payment_method,status,event_name");
 
   if (error) {
     console.error(error);
     throw new Error("An error occurred while fetching tickets");
   }
-
 
   return (
     <div>
@@ -46,10 +46,11 @@ export default async function TicketsPage() {
       <main className="flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 w-full">
         <div className="pb-6">
           <h2 className="text-2xl font-bold tracking-tight">Tickets</h2>
-          <p className="text-muted-foreground">
-            {/* TODO: UPDATE EVENT NAME */}
-            Here&apos;s the ticket list for {data[0].event_name}
-          </p>
+          {data.length !== 0 && (
+            <p className="text-muted-foreground">
+              Here&apos;s the ticket list for {data[0].event_name}.
+            </p>
+          )}
         </div>
         <TicketTable columns={TicketColumns} data={data} />
       </main>

@@ -91,7 +91,7 @@ export default function EditEventPage({
         .returns<Event[]>();
 
       if (error && error.code === "PGRST116") {
-        notFound();
+        router.push("/dashboard/events");
       }
 
       if (error) {

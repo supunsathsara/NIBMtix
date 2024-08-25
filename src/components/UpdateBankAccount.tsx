@@ -52,7 +52,7 @@ const UpdateBankAccount = ({profile}:{profile:any}) => {
               name="account-name"
               placeholder="Enter your account name as per bank"
               required
-              defaultValue={profile.bank.account_name}
+              defaultValue={profile?.bank?.account_name || ''}
             />
           </div>
           <div className="grid gap-2">
@@ -62,7 +62,7 @@ const UpdateBankAccount = ({profile}:{profile:any}) => {
               name="bank-name"
               placeholder="Enter your bank name"
               required
-              defaultValue={profile.bank.bank}
+              defaultValue={profile?.bank?.bank}
             />
           </div>
           <div className="grid gap-2">
@@ -72,7 +72,7 @@ const UpdateBankAccount = ({profile}:{profile:any}) => {
               name="account-number"
               placeholder="Enter your account number"
               required
-              defaultValue={profile.bank.account_number}
+              defaultValue={profile?.bank?.account_number}
             />
           </div>
           <div className="grid gap-2">
@@ -82,7 +82,7 @@ const UpdateBankAccount = ({profile}:{profile:any}) => {
               name="bank-branch"
               placeholder="Enter your bank branch"
               required
-              defaultValue={profile.bank.branch}
+              defaultValue={profile?.bank?.branch}
             />
           </div>
           {/* <Button variant="outline">Update Account</Button> */}

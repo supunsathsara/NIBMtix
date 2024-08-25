@@ -60,9 +60,11 @@ export default async function ParticipantsPage() {
             <h2 className="text-2xl font-bold tracking-tight">
               Participants View
             </h2>
-            <p className="text-muted-foreground">
-              Here&apos;s the participants list for {data[0].event_name}
-            </p>
+            {data.length !== 0 && (
+              <p className="text-muted-foreground">
+                Here&apos;s the participants list for {data[0].event_name}
+              </p>
+            )}
           </div>
           <ParticipantDetails data={data} />
         </main>

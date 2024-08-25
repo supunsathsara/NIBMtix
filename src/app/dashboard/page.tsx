@@ -24,6 +24,7 @@ import {
 import { createClient } from "@/utils/supabase/server";
 import { CalendarClock, CreditCard } from "lucide-react";
 import { Suspense } from "react";
+import NoDataDashboard from "@/components/NoDataDashboard";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -31,6 +32,13 @@ export default async function DashboardPage() {
     .from("event_dashboard")
     .select("*")
     .single();
+
+
+    if (error && (error.code == "PGRST116" || error.code == "22P02")) {
+      return (
+        <NoDataDashboard />
+      );
+    }
 
   if (error) {
     console.error(error);
