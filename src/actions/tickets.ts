@@ -59,3 +59,19 @@ export const toggleLunch = async (id: String, lunch: number) => {
 
   revalidatePath("/dashboard/tickets");
 };
+
+export const activateTicket = async (id: String) => {
+  const { data, error } = await supabase
+    .from("tickets")
+    .update({ status: 1 })
+    .eq("id", id)
+    .select();
+
+  console.log("ticket", data);
+  if (error) {
+    console.error(error);
+    throw new Error("An error occurred while activating ticket");
+  }
+
+  revalidatePath("/dashboard/tickets");
+};

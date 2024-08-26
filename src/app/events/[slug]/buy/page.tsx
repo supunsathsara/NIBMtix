@@ -17,7 +17,7 @@ const TicketBuyPage = async ({ params }: { params: { slug: string } }) => {
   const supabase = createClient();
 
   const { data: eventData, error } = await supabase
-    .from("events_view")
+    .from("events_anon_view")
     .select()
     .eq("slug", params.slug)
     .single()

@@ -1,5 +1,6 @@
 "use client";
 
+import { activateTicket } from "@/actions/tickets";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,8 +47,7 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
         <Badge variant="outline">Cash</Badge>
       ) : row.original.payment_method === 2 ? (
         <Badge variant="outline">Card</Badge>
-      ):
-      (
+      ) : (
         <Badge variant="outline">Free</Badge>
       );
     },
@@ -136,6 +136,13 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
             >
               Copy Ticket ID
             </DropdownMenuItem>
+            {ticket.status == 0 && (
+              <DropdownMenuItem
+                onClick={async () => await activateTicket(ticket.id)}
+              >
+                Activate Ticket
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
