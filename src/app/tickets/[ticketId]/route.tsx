@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from "@/utils/supabase/serviceUser";
 import ReactPDF, {
-    Document,
-    Image,
-    Page,
-    StyleSheet,
-    Text,
-    View,
+  Document,
+  Image,
+  Page,
+  StyleSheet,
+  Text,
+  View,
 } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
 import QRCode from "qrcode";
@@ -138,7 +138,6 @@ export async function GET(
   { params }: { params: { ticketId: string } }
 ) {
   try {
-    const supabase = createClient();
 
     const { data: ticket, error } = await supabase
       .from("tickets")
