@@ -22,6 +22,7 @@ export async function POST(req: Request) {
     } = await req.json();
 
     console.log(key);
+    console.log(status);
 
     if (key !== process.env.EMAIL_VALIDATION_KEY) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     const supabase = createClient();
 
     const { data: eventData, error: fetchError } = await supabase
-      .from("events_view")
+      .from("events_anon_view")
       .select()
       .eq("id", event_id)
       .single()
