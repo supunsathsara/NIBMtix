@@ -59,7 +59,7 @@ const Hero = () => {
             The most convenient way to buy tickets for your favorite events.
           </p>
 
-          <a href="#">
+          <a href="/register">
             <MagicButton
               title="Register Now"
               icon={<FaLocationArrow />}
