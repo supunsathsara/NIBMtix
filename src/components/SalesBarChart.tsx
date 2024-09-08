@@ -12,31 +12,49 @@ const SalesBarChart = (props: any) => {
   // Prepare data
   const rawData = props.data;
 
-  // Parse the first date and determine the day of the week
-  const firstDate = parseISO(rawData[0].date);
-  const weekStartsOn = getDay(firstDate) as Day;
-  console.log(weekStartsOn);
+  let weekData: any[];
 
-  // Get the start of the week based on the first date's day
-  const startDate = startOfWeek(firstDate, { weekStartsOn });
+  if (!rawData || rawData.length === 0) {
+    // Create a default weekData array with 0 tickets sold for all days
+    const today = new Date();
+    const weekStartsOn = getDay(today) as Day;
+    const startDate = startOfWeek(today, { weekStartsOn });
 
-  // Create an array for the entire week with default sales of 0
-  const weekData = Array.from({ length: 7 }, (_, i) => {
-    const date = addDays(startDate, i);
-    return {
-      date: date.toISOString(),
-      day: format(date, "EEE"),
-      tickets_sold: 0,
-    };
-  });
+    weekData = Array.from({ length: 7 }, (_, i) => {
+      const date = addDays(startDate, i);
+      return {
+        date: date.toISOString(),
+        day: format(date, "EEE"),
+        tickets_sold: 0,
+      };
+    });
+  } else {
+    // Parse the first date and determine the day of the week
+    const firstDate = parseISO(rawData[0].date);
+    const weekStartsOn = getDay(firstDate) as Day;
+    console.log(weekStartsOn);
 
-  // Fill in the actual sales data
-  rawData.forEach((item: { date: string; tickets_sold: number }) => {
-    const date = parseISO(item.date);
-    const dayIndex = getDay(date);
-    const weekDayIndex = (dayIndex - weekStartsOn + 7) % 7; // Adjust index based on week start day
-    weekData[weekDayIndex].tickets_sold = item.tickets_sold;
-  });
+    // Get the start of the week based on the first date's day
+    const startDate = startOfWeek(firstDate, { weekStartsOn });
+
+    // Create an array for the entire week with default sales of 0
+    weekData = Array.from({ length: 7 }, (_, i) => {
+      const date = addDays(startDate, i);
+      return {
+        date: date.toISOString(),
+        day: format(date, "EEE"),
+        tickets_sold: 0,
+      };
+    });
+
+    // Fill in the actual sales data
+    rawData.forEach((item: { date: string; tickets_sold: number }) => {
+      const date = parseISO(item.date);
+      const dayIndex = getDay(date);
+      const weekDayIndex = (dayIndex - weekStartsOn + 7) % 7; // Adjust index based on week start day
+      weekData[weekDayIndex].tickets_sold = item.tickets_sold;
+    });
+  }
 
   return (
     <div {...props}>
