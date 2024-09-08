@@ -26,7 +26,6 @@ interface EventPassProps {
   passUrl: string;
 }
 
-const baseUrl = "https://nibmtix.vercel.app";
 
 export const EventPass = ({
   username,
@@ -44,10 +43,6 @@ export const EventPass = ({
       <Preview>Your Pass for {event}</Preview>
       <Body style={main}>
         <Container>
-          <Section style={logo}>
-            <Img src={`${baseUrl}/base.png`} />
-          </Section>
-
           <Section style={content}>
             <Row>
               <Img style={image} width={620} src={eventImage} />
