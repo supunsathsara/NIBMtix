@@ -114,13 +114,15 @@ const TicketPDF = ({
               </Text>
               <Text style={styles.text}>Name: {eventDetails.attendeeName}</Text>
               <Text style={styles.text}>Email: {eventDetails.email}</Text>
-              <Text style={styles.text}>
-                Price:{" "}
-                {Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "LKR",
-                }).format(eventDetails.price)}
-              </Text>
+              {eventDetails.price > 0 && (
+                <Text style={styles.text}>
+                  Price:{" "}
+                  {Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "LKR",
+                  }).format(eventDetails.price)}
+                </Text>
+              )}
             </View>
           </View>
           <Image style={styles.qrCode} src={qrDataURL} />
@@ -138,7 +140,6 @@ export async function GET(
   { params }: { params: { ticketId: string } }
 ) {
   try {
-
     const { data: ticket, error } = await supabase
       .from("tickets")
       .select(
@@ -158,8 +159,11 @@ export async function GET(
       return NextResponse.json({ error: "Invalid ticket ID" }, { status: 400 });
     }
 
-    if(ticket.status !== 1) {
-      return NextResponse.json({ error: "Ticket not activated" }, { status: 400 });
+    if (ticket.status !== 1) {
+      return NextResponse.json(
+        { error: "Ticket not activated" },
+        { status: 400 }
+      );
     }
 
     const eventDetails: EventDetails = {
