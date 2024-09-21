@@ -11,6 +11,7 @@ import AccountOptions from "@/components/AccountOptions";
 import EventSummary from "@/components/EventSummary";
 import Loader from "@/components/Loader";
 import MobileNav from "@/components/MobileNav";
+import NoDataDashboard from "@/components/NoDataDashboard";
 import PaymentsPieChart from "@/components/PaymentsPieChart";
 import RevenueLineChart from "@/components/RevenueLineChart";
 import SalesBarChart from "@/components/SalesBarChart";
@@ -24,7 +25,6 @@ import {
 import { createClient } from "@/utils/supabase/server";
 import { CalendarClock, CreditCard } from "lucide-react";
 import { Suspense } from "react";
-import NoDataDashboard from "@/components/NoDataDashboard";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -33,12 +33,9 @@ export default async function DashboardPage() {
     .select("*")
     .single();
 
-
-    if (error && (error.code == "PGRST116" || error.code == "22P02")) {
-      return (
-        <NoDataDashboard />
-      );
-    }
+  if (error && (error.code == "PGRST116" || error.code == "22P02")) {
+    return <NoDataDashboard />;
+  }
 
   if (error) {
     console.error(error);
@@ -98,8 +95,29 @@ export default async function DashboardPage() {
                     currency: "LKR",
                   }).format(dashboardData.total_revenue)}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  from {dashboardData.total_ticket_sales} tickets sold
+                <p className="text-xs text-muted-foreground gap-4">
+                  <span className="mr-5">
+                    Cash:{" "}
+                    {Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "LKR",
+                    }).format(
+                      dashboardData.payment_methods.find(
+                        (method: { method: number }) => method.method === 1
+                      )?.count * dashboardData.ticket_price || 0
+                    )}
+                  </span>
+                  <span>
+                    Card:{" "}
+                    {Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "LKR",
+                    }).format(
+                      dashboardData.payment_methods.find(
+                        (method: { method: number }) => method.method === 2
+                      )?.count * dashboardData.ticket_price || 0
+                    )}
+                  </span>
                 </p>
               </CardContent>
             </Card>
@@ -141,11 +159,11 @@ export default async function DashboardPage() {
                   {dashboardData.total_ticket_sales > 0
                     ? (
                         (dashboardData.attended_people /
-                          dashboardData.total_ticket_sales) *
+                          dashboardData.total_paid_tickets) *
                         100
                       ).toFixed(2)
                     : 0}
-                  % of total tickets sold
+                  % of total paid tickets sold
                 </p>
               </CardContent>
             </Card>
