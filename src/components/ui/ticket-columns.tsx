@@ -136,7 +136,7 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
             >
               Copy Ticket ID
             </DropdownMenuItem>
-            {ticket.status == 0 && (
+            {ticket.status != 1 && (
               <DropdownMenuItem
                 onClick={async () => await activateTicket(ticket.id)}
               >
