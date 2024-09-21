@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MenuIcon, TicketIcon } from "@/components/ui/Icons";
 import { dashboardNavItems } from "@/data";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 function SheetNav({ active }: { active: string }) {
   return (
@@ -17,11 +18,12 @@ function SheetNav({ active }: { active: string }) {
       <SheetContent side="left" className="sm:max-w-xs">
         <nav className="grid gap-6 text-lg font-medium">
           <Link
-            href="#"
-            className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+            href="/dashboard"
+            className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-primary-foreground md:text-base"
             prefetch={false}
           >
-            <TicketIcon className="h-5 w-5 transition-all group-hover:scale-110" />
+            {/* <TicketIcon className="h-5 w-5 transition-all group-hover:scale-110" /> */}
+            <Image src="/N-logo-transparent.png" alt="NIBMTix" width={40} height={40} />
             <span className="sr-only">NIBMTix</span>
           </Link>
           {dashboardNavItems.map((item) => (
