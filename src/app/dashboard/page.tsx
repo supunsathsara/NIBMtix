@@ -172,21 +172,44 @@ export default async function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Ticket Sales by Event
+                  Ticket Sales by Day
                 </CardTitle>
                 <TicketIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <SalesBarChart
-                  className="aspect-square py-6"
+                  className="py-2"
                   data={dashboardData.tickets_by_day}
                 />
+                <div className="mt-3">
+                  <p className="text-sm text-muted-foreground">
+                    Total Tickets Sold:{" "}
+                    <span className="font-bold ml-1">
+                      {dashboardData.total_ticket_sales}
+                    </span>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Total Available Tickets:{" "}
+                    <span className="font-bold ml-1">
+                      {dashboardData.tickets_available}
+                    </span>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Total Revenue:{" "}
+                    <span className="font-bold ml-1">
+                      {Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "LKR",
+                      }).format(dashboardData.total_revenue)}
+                    </span>
+                  </p>
+                </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Revenue by Month
+                  Revenue by Day
                 </CardTitle>
                 <DollarSignIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
@@ -196,6 +219,55 @@ export default async function DashboardPage() {
                   data={dashboardData.tickets_by_day}
                   ticketPrice={dashboardData.ticket_price}
                 />
+                <div className="mt-3">
+                  <p className="text-sm text-muted-foreground">
+                    Ticket Price:{" "}
+                    <span className="font-bold ml-1">
+                      {Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "LKR",
+                      }).format(dashboardData.ticket_price)}
+                    </span>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Paid Ticket Revenue:{" "}
+                    <span className="font-bold ml-1">
+                      {Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "LKR",
+                      }).format(
+                        dashboardData.total_paid_tickets *
+                          dashboardData.ticket_price
+                      )}
+                    </span>
+                  </p>
+
+                  <p className="text-sm text-muted-foreground">
+                    Unpaid Ticket Revenue:{" "}
+                    <span className="font-bold ml-1">
+                      {Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "LKR",
+                      }).format(
+                        dashboardData.total_unpaid_tickets *
+                          dashboardData.ticket_price
+                      )}
+                    </span>
+                  </p>
+
+                  <p className="text-sm text-muted-foreground">
+                    Refunded Ticket Revenue:{" "}
+                    <span className="font-bold ml-1">
+                      {Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "LKR",
+                      }).format(
+                        dashboardData.total_refunded_tickets *
+                          dashboardData.ticket_price
+                      )}
+                    </span>
+                  </p>
+                </div>
               </CardContent>
             </Card>
             <Card>
@@ -207,9 +279,39 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <PaymentsPieChart
-                  className="aspect-square py-6"
+                  className="py-6"
                   data={dashboardData.payment_methods}
                 />
+                {dashboardData.ticket_price > 0 && (
+                  <div className="mt-3">
+                    <p className="text-sm text-muted-foreground">
+                      Cash Payments:{" "}
+                      <span className="font-bold ml-1">
+                        {Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "LKR",
+                        }).format(
+                          dashboardData.payment_methods.find(
+                            (method: { method: number }) => method.method === 1
+                          )?.count * dashboardData.ticket_price || 0
+                        )}
+                      </span>
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Card Payments:{" "}
+                      <span className="font-bold ml-1">
+                        {Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "LKR",
+                        }).format(
+                          dashboardData.payment_methods.find(
+                            (method: { method: number }) => method.method === 2
+                          )?.count * dashboardData.ticket_price || 0
+                        )}
+                      </span>
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -217,7 +319,7 @@ export default async function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Upcoming Events
+                  Events Summary
                 </CardTitle>
                 <CalendarIcon className="w-4 h-4 text-muted-foreground" />
               </CardHeader>
