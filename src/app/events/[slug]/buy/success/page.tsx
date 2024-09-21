@@ -5,6 +5,8 @@ import { DownloadCloudIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { supabase } from "@/utils/supabase/serviceUser";
 
+export const dynamic = "force-dynamic";
+
 const SuccessPage = async ({
   params,
   searchParams,
