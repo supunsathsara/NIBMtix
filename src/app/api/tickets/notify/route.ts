@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 import { Event } from "@/types";
 import EventPass from "@/emails/EventPass";
+import { supabase as supabaseAdmin } from "@/utils/supabase/serviceUser";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -22,12 +23,21 @@ export async function POST(req: Request) {
       event_name,
     } = await req.json();
 
-    console.log(key);
+    const { data: valid, error: validateError } = await supabaseAdmin.rpc(
+      "validate_api_key",
+      {
+        api_key: key,
+        event_id: event_id,
+      }
+    );
 
-    if (key !== process.env.EMAIL_VALIDATION_KEY) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (validateError) {
+      return NextResponse.json({ error: validateError }, { status: 401 });
     }
 
+    if (!valid) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const supabase = createClient();
 
     const { data: eventData, error: fetchError } = await supabase

@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -175,3 +176,63 @@ export const updateSecurityInfo = async (
     message: "Password updated successfully",
   };
 };
+
+export const generateApiKey = async () => {
+  const supabase = createClient();
+
+  const newKey = randomBytes(32).toString("hex");
+
+  try {
+    const { data, error } = await supabase
+      .from("api_keys")
+      .insert({
+        key: newKey,
+      })
+      .select();
+    if (error) {
+
+      console.error("error", error);
+      return {
+        status: 400,
+        message: "Failed to generate and save the new API key.",
+      };
+    }
+
+    revalidatePath("/dashboard/settings");
+
+    return {
+      status: 200,
+      message: newKey,
+    };
+  } catch (error) {
+    console.error("error", error);
+    return {
+      status: 400,
+      message: "Failed to generate and save the new API key.",
+    };
+  }
+};
+
+
+export const deleteApiKey = async (key: string) => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("api_keys")
+    .delete()
+    .eq("key", key)
+    .select();
+
+  if (error) {
+    console.error("error", error);
+    return {
+      status: 400,
+      message: "Failed to delete the API key.",
+    };
+  }
+  revalidatePath("/dashboard/settings");
+  return {
+    status: 200,
+    message: "API Key deleted successfully",
+  };
+}

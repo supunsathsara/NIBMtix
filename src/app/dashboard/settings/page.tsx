@@ -1,3 +1,4 @@
+import APIManage from "@/components/APIManage";
 import DeleteAccount from "@/components/DeleteAccount";
 import PayoutHistory from "@/components/PayoutHistory";
 import {
@@ -30,7 +31,8 @@ export default async function SettingsPage() {
       full_name,
       mobile,
       avatar_url,
-      bank:bank_accounts(account_name ,bank,account_number,branch)
+      bank:bank_accounts(account_name ,bank,account_number,branch),
+      keys:api_keys(key)
       `
     )
     .eq("id", sessionData.user.id)
@@ -72,6 +74,7 @@ export default async function SettingsPage() {
             data={{ ...data, email: sessionData.user.email }}
           />
           <UpdateSecurityInfo data={{ email: sessionData.user.email }} />
+          <APIManage data={data.keys} />
           <Separator className="my-4" />
           <UpdateBankAccount profile={data} />
           <PayoutHistory />
