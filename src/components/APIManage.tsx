@@ -56,6 +56,7 @@ const APIManage = ({ data }: { data: ApiKey[] }) => {
 
   const handleGenerateNewKey = async () => {
     try {
+      setIsGenerating(true);
       const { status, message } = await generateApiKey();
       if (status === 200) {
         setApiKeys([...apiKeys, { key: message }]);
@@ -75,6 +76,8 @@ const APIManage = ({ data }: { data: ApiKey[] }) => {
         description: "Failed to generate and save the new API key.",
         type: "foreground",
       });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
