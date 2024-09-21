@@ -11,22 +11,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { EventListCmb } from "./EventListCmb";
 
 async function AccountOptions() {
   const supabase = createClient();
 
-  const { data: user, error: userError } = await supabase
-    .from("user_profile ")
-    .select("*")
-    .single();
+  const [userResult, eventResult] = await Promise.all([
+    supabase.from("user_profile").select("*").single(),
+    supabase
+      .from("events_view")
+      .select("id,name,slug,default")
+      .returns<Event[]>(),
+  ]);
+
+  const { data: user, error: userError } = userResult;
+  const { data: eventData, error } = eventResult;
 
   return (
-    <div className="ml-auto flex items-center gap-2">
-      <Input
-        type="search"
-        placeholder="Search events..."
-        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-      />
+    <div className="ml-auto flex items-center gap-10">
+      <EventListCmb eventList={eventData} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>

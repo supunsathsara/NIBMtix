@@ -20,6 +20,7 @@ export const markEventAsDefault = async (id: string) => {
     return;
   }
   console.log("Event successfully marked as default");
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/events");
   revalidatePath("/dashboard/tickets");
   revalidatePath("/dashboard/participants");
