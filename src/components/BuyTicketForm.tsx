@@ -128,7 +128,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
           _event_id: eventData.id,
           _event_name: eventData.name,
           _event_image: eventData.image,
-        }
+        };
       }
 
       const { data: ticketData, error: insertError } = await supabase.rpc(
@@ -137,6 +137,22 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       );
 
       if (insertError) {
+        if (
+          insertError.message.includes(
+            "You can't have two pending tickets with the same email."
+          )
+        ) {
+          setError("You can't have two pending tickets with the same email. Activate the previous ticket or contact the organizer.");
+          // Show error toast
+          toast({
+            title: "Pending Ticket Already Exists",
+            description:
+              "You can't have two pending tickets with the same email. Activate the previous ticket or contact the organizer.",
+            type: "foreground",
+          });
+          return;
+        }
+
         console.error("Error adding ticket:", insertError.message);
         setError("Sorry, we couldn't create your ticket");
         // Show error toast
@@ -223,7 +239,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       custom_1: eventData.created_by,
       custom_2: eventData.ticket_price,
     };
-    console.log(payment)
+    console.log(payment);
     setPaymentOrderId(null);
     //open payhere's payment selection
     payhere.startPayment(payment);
