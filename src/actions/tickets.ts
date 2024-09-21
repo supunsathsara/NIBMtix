@@ -1,6 +1,11 @@
 "use server";
+import TicketConfirmation from "@/emails/TicketConfirmation";
+import { Event } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const supabase = createClient();
 export const toggleAttendance = async (id: String, attendance: number) => {
@@ -60,14 +65,61 @@ export const toggleLunch = async (id: String, lunch: number) => {
   revalidatePath("/dashboard/tickets");
 };
 
-export const activateTicket = async (id: String) => {
-  const { data, error } = await supabase
+export const activateTicket = async (id: string) => {
+  const { data: ticketData, error } = await supabase
     .from("tickets")
     .update({ status: 1 })
     .eq("id", id)
-    .select();
+    .select()
+    .single();
 
-  console.log("ticket", data);
+  const { data: eventData, error: fetchError } = await supabase
+    .from("events_anon_view")
+    .select()
+    .eq("id", ticketData.event_id)
+    .single()
+    .returns<Event[]>();
+
+  if (fetchError && fetchError.code == "PGRST116") {
+    throw new Error("Event not found");
+  }
+
+  if (fetchError) {
+    console.error(fetchError);
+    throw new Error("An error occurred while fetching event data");
+  }
+
+  const emailDetails = {
+    username: ticketData.name,
+    event: eventData.name,
+    eventImage: eventData.image,
+    date: new Date(eventData.date).toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }),
+    time: new Date(`1970-01-01T${eventData.time}`).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }),
+    location: eventData.location,
+    ticketId: id,
+    ticketUrl: `https://nibmtix.vercel.app/tickets/${id}`,
+  };
+
+  const { data, error: emailError } = await resend.emails.send({
+    from: "NIBMTix <nibmtix@notifibm.com>",
+    to: [ticketData.email],
+    subject: `Your Ticket for ${eventData.name}`,
+    react: TicketConfirmation(emailDetails),
+  });
+
+  if (emailError) {
+    console.error(emailError);
+    throw new Error("An error occurred while sending email");
+  }
+
   if (error) {
     console.error(error);
     throw new Error("An error occurred while activating ticket");
