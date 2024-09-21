@@ -13,6 +13,7 @@ const EventLandingPage = async ({ params }: { params: { slug: string } }) => {
     .from("events_anon_view")
     .select()
     .eq("slug", params.slug)
+    .eq("status", 1)
     .single()
     .returns<Event[]>();
 

@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       .from("events_anon_view")
       .select()
       .eq("id", event_id)
+      .eq("status", 1)
       .single()
       .returns<Event[]>();
 
