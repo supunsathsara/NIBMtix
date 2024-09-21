@@ -127,3 +127,17 @@ export const activateTicket = async (id: string) => {
 
   revalidatePath("/dashboard/tickets");
 };
+
+export const refundTicket = async (id: string) => {
+  const { data, error } = await supabase
+    .from("tickets")
+    .update({ status: 2 })
+    .eq("id", id)
+    .select();
+  if (error) {
+    console.error(error);
+    throw new Error("An error occurred while refunding ticket");
+  }
+
+  revalidatePath("/dashboard/tickets");
+};

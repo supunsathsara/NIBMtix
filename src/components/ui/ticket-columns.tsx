@@ -1,6 +1,6 @@
 "use client";
 
-import { activateTicket } from "@/actions/tickets";
+import { activateTicket, refundTicket } from "@/actions/tickets";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -141,6 +141,14 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
                 onClick={async () => await activateTicket(ticket.id)}
               >
                 Activate Ticket
+              </DropdownMenuItem>
+            )}
+
+            {ticket.status == 1 && (
+              <DropdownMenuItem
+                onClick={async () => await refundTicket(ticket.id)}
+              >
+                Refund Ticket
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
