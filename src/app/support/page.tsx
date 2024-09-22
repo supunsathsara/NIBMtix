@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DownloadIcon, FileIcon, PlayIcon } from "@radix-ui/react-icons";
 import { AppleIcon, ComputerIcon, MenuIcon, MountainIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const SupportPage = () => {
@@ -21,8 +22,12 @@ const SupportPage = () => {
             className="inline-flex items-center gap-2 "
             prefetch={false}
           >
-            <MountainIcon className="h-6 w-6" />
-            <span className="text-lg font-bold">NIBMTiX</span>
+            <Image
+              src="/Logo-horizontal.svg"
+              alt="NIBMTiX"
+              width={120}
+              height={40}
+            />
           </Link>
           <nav className="hidden space-x-4 md:flex">
             <Link href="/" className="hover:text-white/80" prefetch={false}>

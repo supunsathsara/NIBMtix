@@ -10,9 +10,9 @@ import {
 import { DashboardNavItem } from "@/types";
 
 export const navItems = [
-  { name: "Home", link: "#home" },
-  { name: "About", link: "#about" },
-  { name: "Contact", link: "#contact" },
+  { name: "Home", link: "/#home" },
+  { name: "About", link: "/#about" },
+  { name: "Contact", link: "/#contact" },
   { name: "Login", link: "/login" },
 ];
 

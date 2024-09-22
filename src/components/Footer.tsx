@@ -1,11 +1,11 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import Logo from '../../public/Logo-horizontal.svg'
+import Image from "next/image";
+import Link from "next/link";
+import Logo from "../../public/Logo-horizontal.svg";
 
 const Footer = () => {
   return (
     <footer className="footer w-full">
-        <div className="w-full absolute left-0 -bottom-72 min-h-96">
+      <div className="w-full absolute left-0 -bottom-72 min-h-96">
         <img
           src="/footer-grid.svg"
           alt="grid"
@@ -27,6 +27,11 @@ const Footer = () => {
           {/**Legal */}
           <ul className="flex flex-col space-y-1 md:space-y-2">
             <li>
+              <Link href="/support" className="text-slate-400 hover:text-white">
+                Support
+              </Link>
+            </li>
+            <li>
               <Link
                 href="/privacy-policy"
                 className="text-slate-400 hover:text-white"
@@ -43,7 +48,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
