@@ -13,28 +13,7 @@ export default async function LoginPage({
 }: {
   searchParams: { message: string; error: string; code: string };
 }) {
-  const supabase = createClient();
-  if (searchParams.code) {
-    const { data: newSession, error: newSessionError } =
-      await supabase.auth.exchangeCodeForSession(searchParams.code);
-
-    if (newSessionError) {
-      console.error("Could not authenticate user", newSessionError.message);
-      return redirect(
-        `/login?error=${encodeURIComponent(newSessionError.message)}`
-      );
-    }
-
-    if (newSession.session) {
-      await supabase.auth.setSession({
-        access_token: newSession.session.access_token,
-        refresh_token: newSession.session.refresh_token,
-      });
-    }
-    return redirect("/dashboard");
-  }
-
-  const signIn = async (formData: FormData) => {
+  const resetPassword= async (formData: FormData) => {
     "use server";
 
     const origin = headers().get("origin");
@@ -42,7 +21,7 @@ export default async function LoginPage({
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${origin}/forgot-password`,
+      redirectTo: `${origin}/auth/callback`,
     });
 
     if (error) {
@@ -64,7 +43,7 @@ export default async function LoginPage({
           Enter your email below to get a password reset link
         </p>
       </div>
-      <form action={signIn}>
+      <form action={resetPassword}>
         {searchParams.message && (
           <div className="bg-green-200/80 mb-4 text-green-800 p-2 rounded">
             {searchParams.message}
