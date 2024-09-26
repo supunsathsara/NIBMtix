@@ -465,7 +465,7 @@ const BuyTicketForm: React.FC<BuyTicketFormProps> = ({
       </Form>
       <Script
         type="text/javascript"
-        src="https://www.payhere.lk/lib/payhere.js"
+        src="/js/payhere.js"
       ></Script>
     </>
   );
