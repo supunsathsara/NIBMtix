@@ -9,10 +9,17 @@ import { z } from "zod";
 import SubmitButton from "@/components/SubmitButton";
 
 const SignUpSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email("Invalid email address").min(3, "Email is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  phone: z.string().min(9, "Phone number must be at least 9 characters"),
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+  phone: z
+    .string()
+    .min(9, "Phone number must be at least 9 characters")
+    .max(15, "Phone number must be at most 15 characters")
+    .regex(/^\d+$/, "Phone number must contain only digits"),
 });
 
 export default async function RegisterPage({
@@ -20,7 +27,6 @@ export default async function RegisterPage({
 }: {
   searchParams: { message: string; error: string };
 }) {
-
   const supabase = createClient();
 
   const {
