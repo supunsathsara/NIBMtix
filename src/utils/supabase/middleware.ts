@@ -44,7 +44,7 @@ export const updateSession = async (request: NextRequest) => {
       }
     }
 
-    if(request.nextUrl.pathname.startsWith('/login' || '/register')) {
+    if(request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register')) {
       if (data.user) {
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
